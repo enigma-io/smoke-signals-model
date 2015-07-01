@@ -1,0 +1,346 @@
+---
+title: "Computing Smoke Alarm Risk with the AHS + ACS"
+author: "Brian Abelson"
+date: "June 17, 2015"
+output: html_document
+---
+
+## Setup
+```{r setup, warning=FALSE, message=FALSE}
+rm(list=ls())
+
+# set your working directory here
+WD <- '/Users/brianabelson/enigma/public/smoke-alarm-risk'
+setwd(WD)
+
+# set where you want the model output to go here
+OUTPUT <- 'data/smoke-alarm-risk-scores.csv'
+
+# include the plot theme
+source('rscripts/plot_theme.R')
+
+# clean the data.
+source('rscripts/clean.R')
+
+require(ggplot2)
+require(plyr)
+```
+
+## Explore Missing Data
+
+The AHS does not require that subjects respond to all questions. As a result, there's a lot of missing data. We'll discuss how we deal with it below.
+
+```{r missing-data, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
+nrows <- nrow(d)
+
+per_na <- function(x) {
+  round(((length(which(is.na(x))) / nrows) * 100), 2)
+}
+
+group_per_missing <- function(g){
+  vars <- group_to_vars[g][[1]]
+  x <- subset(d, select=vars)
+  data.frame(group=g, per_missing=mean(apply(x, 2, per_na)))
+}
+per_missing_by_group <- ldply(groups, group_per_missing)
+
+ggplot(per_missing_by_group, aes(x=reorder(group, per_missing), y=per_missing, label=per_missing)) +
+  geom_bar(stat='identity', color=RED, fill=RED) +
+  geom_text(size=4) +
+  coord_flip() + 
+  xlab('Variable group') + 
+  ylab('Percent of observations missing') +
+  labs(title='Missing Data by Variable Group') + 
+  theme_enigma()
+
+```
+
+
+## Correlations with "smoke"
+
+A simple way to explore what factors are most associated with people who don't have smoke alarms is by computing correlations between the dependent variable and all independent variables.  The following two plots visualize
+
+1. Absolute correlation by variable. 
+2. Mean absolute correlation of variable by group.
+
+```{r explore-correlations-1, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
+
+# remove groups which have a preponderance of missing values
+group_to_vars$pvalue <- NULL
+group_to_vars$vacancy <- NULL
+group_to_vars$qfs1 <- NULL
+group_to_vars$rent <- NULL
+group_to_vars$lprice <- NULL
+
+vars <- as.character(unlist(group_to_vars))
+
+# remove ids / geo vars / dep. vars.
+vars <- vars[7:length(vars)]
+
+calc_correlation_with_y <- function(n, y, abs=F) { 
+  c <- round(cor(d[, y], d[, n], use="pairwise.complete.obs"), 3)
+  if (abs){
+    c <- abs(c)
+  }
+  return(data.frame(var = n, cor = c))
+}
+
+calc_corrlation_per_group_with_y <- function(g, y, abs) { 
+    vars <- group_to_vars[g][[1]]
+    if (!is.null(vars)) {
+      group_cor_d <- ldply(vars, calc_correlation_with_y, y, abs)
+      data.frame(group=g, cor=round(mean(na.omit(group_cor_d$cor)), 3)) 
+    }
+  }
+
+cor_d <- ldply(vars, calc_correlation_with_y, 'smoke')
+cor_d <- cor_d[order(cor_d$cor, decreasing=T), ]
+
+ggplot(head(cor_d, 25), aes(x=reorder(var, cor), y=cor, label=cor)) +
+  geom_bar(stat='identity', color=TEAL, fill=TEAL) +
+  geom_text(size=4) +
+  coord_flip() + 
+  xlab('Variable') + 
+  ylab('Correlation') +
+  labs(title='Top 25 correlatied variables with "smoke"') + 
+  theme_enigma()
+
+group_cor_d <- ldply(triple_groups, calc_corrlation_per_group_with_y, 'smoke', T)
+group_cor_d <- group_cor_d[!is.na(group_cor_d$cor), ]
+group_cor_d <- group_cor_d[order(group_cor_d$cor, decreasing=T), ]
+ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
+  geom_bar(stat='identity', color=TEAL, fill=TEAL) +
+  geom_text(size=4) +
+  coord_flip() + 
+  xlab('Variable group') + 
+  ylab('Correlation with smoke') +
+  labs(title='Mean absolute correlations with "smoke" by variable group') + 
+  theme_enigma()
+```
+
+## Correlations With "battery"
+
+When we were first exploring the AHS, we thought we might be able to conflate two variables as our dependent variable: 
+
+- `smoke`: Do you have a working smoke detector?
+- `battery`": Have you changed your smoke detector's batteries in the past 6 months?
+
+Our reasoning here was that some respondents might now know if they had a working smoke detector or, if they did, would unwilling to admit so.
+However, when we dug into the data, we we're surprised to find that these two variables were associated with very different populations.
+
+While people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes, people who hadn't changed their batteries in the past 6 months tended to be highly educated, have mortgages, and live in newer construction buildings.
+
+```{r, explore-correlations-2, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
+cor_d <- ldply(vars, calc_correlation_with_y, 'battery')
+cor_d <- cor_d[order(cor_d$cor, decreasing=T), ]
+
+ggplot(head(cor_d, 25), aes(x=reorder(var, cor), y=cor, label=cor)) +
+  geom_bar(stat='identity', color=BLUE, fill=BLUE) +
+  geom_text(size=4) +
+  coord_flip() + 
+  xlab('Variable') + 
+  ylab('Correlation with "battery"') +
+  labs(title='Top 25 correlatied variables with "battery"') + 
+  theme_enigma()
+
+group_cor_d <- ldply(triple_groups, calc_corrlation_per_group_with_y, 'battery', T)
+group_cor_d <- group_cor_d[!is.na(group_cor_d$cor), ]
+
+ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
+  geom_bar(stat='identity', color=BLUE, fill=BLUE) +
+  geom_text(size=4) +
+  coord_flip() + 
+  xlab('Variable group') + 
+  ylab('Correlation with "battery') +
+  labs(title='Mean absolute correlations with "battery" by variable group') + 
+  theme_enigma()
+```
+
+## Generating the model
+
+Armed with a good idea of what variables to select for our model, we had to figure out a good set of methodologies for dealing with two data issues:
+
+### Missing Data
+As the plot above shows, certain variables are plagued by missingness. We dealt with this in two ways:
+
+1. Don't use variables with > 30% missing data. This is certainly a constraint, but it would be irresponsible to generate estimates which could be biased by missingness.
+2. Randomnly impute missing data.  Since each variable in the AHS is a binary indicator, we impute the missing data by sampling from it's existing distribution.
+
+### Rank Deficiency
+Only 4% of respondents answered negatively to the question "Do you have a working smoke alarm." For such rare events, it can be difficult to generate robust coefficients.  We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from each of these iterations.
+
+```{r generate-model, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
+
+# our model's formula
+f <- smoke ~  built_1980_to_1989 + built_1960_to_1969 + built_2010_to_later + 
+              built_1990_to_1999 + built_1950_to_1959 + built_1939_or_earlier + 
+              poor_50_to_99 + poor_under_50  + poor_184_to_199 + poor_125_to_149 + 
+              poor_100_to_124 + poor_150_to_184 + hhmove_moved_in_1990_to_1999 + 
+              hhmove_moved_in_1969_or_earlier + hhmove_moved_in_2000_to_2009 + 
+              hhmove_moved_in_1970_to_1979 + hhmove_moved_in_1980_to_1989 +  
+              hhgrad_associates_degree + hhgrad_7th_or_8th_grade + hhgrad_9th_grade + 
+              hhgrad_doctorate_degree + hhgrad_5th_or_6th_grade + hhgrad_regular_high_school_grad + 
+              hhgrad_bachelors_degree + hhgrad_1st_2nd_3rd_4th_grade + hhgrad_11th_grade + 
+              hhgrad_less_than_1st_grade  + hhgrad_12th_grade_no_diploma + hhspan_yes + 
+              tenure_renter_occupied + 
+              hfuel_wood + 
+              mg_yes
+
+# a list of rows which have postive and negative outcomes.
+idx_no_smoke <- which(d$smoke != 1)
+idx_smoke <- which(d$smoke == 1)
+
+# A function for imputing missing data by sampling from a column's distribution
+na_roughfix_sample <- function (object) {
+    res <- lapply(object, roughfix_sample)
+    structure(res, class = "data.frame", row.names = seq_len(nrow(object)))
+  }
+
+roughfix_sample <- function(x) {
+  missing <- is.na(x)
+  if (!any(missing)) return(x)
+  x[missing] <- sample(x[!missing], length(missing), replace=T)
+  return(x)
+}
+
+# impute missing data.
+d <- na_roughfix_sample(d)
+
+# A function for estimating coefficients for a single iteration.
+estimate_coefs_i <- function(i, chunk_size=3000, per_negative=0.5) {
+   idx_no_smoke_i <- sample(idx_no_smoke, (chunk_size * (1-per_negative)), replace=T)
+   idx_smoke_i <- sample(idx_smoke, (chunk_size * per_negative), replace=T)
+   d_i <- d[c(idx_no_smoke_i, idx_smoke_i), ]
+   d_i$smoke <- as.factor(d_i$smoke)
+   m <- glm(f, data=d_i, family=binomial(link="logit"))
+   o <- as.data.frame(summary(m)$coefficients)
+   o$terms <- rownames(o)
+   rownames(o) <- NULL
+   names(o) <- c("estimate", "std_error", "z_value", "p_value", "term")
+   o$term[1] <- 'intercept'
+   return(o)
+}
+
+# run 1000 iterations
+raw_coefs <- ldply(1:1000, estimate_coefs_i)
+
+# plot distribution of raw coeficients per variable
+ggplot(raw_coefs, aes(x=reorder(term, estimate), y=estimate)) +
+  geom_point(alpha=0.2, color=BLUE) +
+  coord_flip() + 
+  xlab('Dep. Variable') + 
+  ylab('Coefficient') +
+  ylim(-2, 2) +
+  labs(title='Coefficients for 1000 iterations') + 
+  theme_enigma()
+
+# bootstrapped coefficients
+coefs <- ddply(raw_coefs, 'term', summarize, 
+               p_value = median(p_value), 
+               z_value = median(z_value),
+               std_error = median(std_error),
+               estimate = median(estimate),
+               estimate_25_per = as.numeric(quantile(raw_coefs$estimate)[2]),
+               estimate_75_per = as.numeric(quantile(raw_coefs$estimate)[4])
+               )
+
+# plot the bootstrapped coefficients
+ggplot(coefs, aes(x=reorder(term, estimate), y=estimate)) + 
+  geom_point(fill=RED, color=RED, size=3) +
+  coord_flip() + 
+  geom_pointrange(aes(ymin = estimate - std_error, ymax = estimate + std_error),  color=RED) + 
+  xlab('Variable') + 
+  ylab('Coefficient') +
+  labs(title='Bootstrapped Coefficients and Std. Errors') + 
+  theme_enigma() 
+```
+
+## Generating the scores
+
+Now that we have our coefficients, we need to set about applying them to ACS data to generate risk scores for each census block group. 
+
+Since we've already comprehensively mapped variables between the two datasets, this process is relatively straightforward.
+```{r read-in-acs, echo=F, warning=F, message=F}
+# read in the acs and convert nulls -> 0
+acs <- as.data.frame(fread('data/acs.csv'))
+acs[is.na(acs)] <- 0
+```
+
+```{r compute-risk-scores, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
+
+
+
+# the acs tables have a full geoid, 
+# but we need a simplified it to just 
+# get block-group summary level
+parse_id <- function(x) {
+  strsplit(x, 'US')[[1]][2]
+}
+parse_sum_level <- function(x) { 
+   strsplit(x, 'US')[[1]][1]
+}
+
+acs$bg_geoid <- as.character(unlist(llply(acs$geoid, parse_id)))
+acs$sum_level <- as.character(unlist(llply(acs$geoid, parse_sum_level)))
+
+# filter to just block groups
+acs <- acs[acs$sum_level == '15000', ]
+
+# keep the block group ids for later
+bg_geoid <- acs$bg_geoid
+
+# get the intercept, terms, and estimates from the bootstrapped parameters
+i <- which(coefs$term=='intercept')
+intercept <- as.numeric(coefs$estimate[i])
+terms <- as.character(coefs$term[-i])
+estimates <- as.numeric(coefs$estimate[-i])
+
+# select the terms from the acs
+acs <- subset(acs, select=terms)
+
+# function for applying an individual score to a term
+score_coef <- function(i){ 
+  t_i <- as.character(terms[i])
+  e_i <- as.numeric(estimates[i])
+  x_i <- as.numeric(acs[, t_i])
+  return(x_i * e_i)
+}
+
+# apply estimates to acs terms
+score_list <- llply(1:length(terms), score_coef)
+names(score_list) <- terms
+score_df <- as.data.frame(score_list)
+score_df$score <- rowSums(score_df)
+score_df$score <- score_df$score + intercept
+score_df$score <- 1/(1+exp(-score_df$score))
+
+# normalize
+score_df$score <- (score_df$score - min(score_df$score)) / 
+                  (max(score_df$score) - min(score_df$score))
+ 
+# plot a histogram of the computed scores
+ggplot(score_df, aes(x=score)) + 
+  geom_histogram(aes(y=..density..), color="white", fill=BLUE, binwidth=0.04) +
+  geom_density(color=RED) + 
+  theme_enigma() + 
+  ylab('Density') + 
+  xlab('Smoke Alarm Risk') + 
+  labs(title='Smoke alarm risk for US Census Block Groups')
+```
+
+## Formatting the output.
+
+In order to give a better indication of whether a block group is at-risk for fatalities from fires, we also include an indicator for the percentage of the population that is under the age of 5 or over the age of 65 for each block group. We also include the total population to filter out block groups without inhabitants.
+
+```{r format-output, warning=FALSE, message=FALSE}
+output <- data.frame(smoke_alarm_risk=score_df$score, bg_geoid=bg_geoid)
+at_risk <- as.data.frame(fread('data/acs-bg-at-risk-population.csv'))
+pop <- as.data.frame(fread('data/acs-bg-population.csv'))
+output <- join(output, at_risk, by='bg_geoid')
+output <- join(output, pop, by='bg_geoid')
+write.csv(output, OUTPUT, row.names=F, na="")
+cat('Smoke alarm risk scores written to', OUTPUT)
+```
+
+
+

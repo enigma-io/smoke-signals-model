@@ -1,0 +1,10 @@
+data/*.csv
+data/*.Rdata
+*.DS_Store
+*.Rhistory
+*.Rdata
+*.html
+cache/*
+figure/
+index.md
+index.html
