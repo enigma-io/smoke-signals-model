@@ -26,4 +26,5 @@ view:
 
 s3:
 
-	s3cmd put data/smoke-alarm-risk-scores.csv s3://enigma-public/projects/smoke-alarm-risk/data/smoke-alarm-risk-scores.csv
+	s3cmd put data/smoke-alarm-risk-scores.csv s3://enigma-public/projects/smoke-alarm-risk/data/smoke-alarm-risk-scores.csv 
+	s3cmd setacl s3://enigma-public/projects/smoke-alarm-risk/data/smoke-alarm-risk-scores.csv --acl-public --recursive
