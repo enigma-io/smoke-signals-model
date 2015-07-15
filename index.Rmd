@@ -123,9 +123,9 @@ ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
 When we were first exploring the AHS, we thought we might be able to conflate two variables as our dependent variable: 
 
 - `smoke`: Do you have a working smoke detector?
-- `battery`": Have you changed your smoke detector's batteries in the past 6 months?
+- `battery`: Have you changed your smoke detector's batteries in the past 6 months?
 
-Our reasoning here was that some respondents might now know if they had a working smoke detector or, if they did, would unwilling to admit so.
+Our reasoning here was that some respondents might now know if they had a working smoke detector or, if they did, would be unwilling to admit so.
 However, when we dug into the data, we we're surprised to find that these two variables were associated with very different populations.
 
 While people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes, people who hadn't changed their batteries in the past 6 months tended to be highly educated, have mortgages, and live in newer construction buildings.
@@ -164,7 +164,7 @@ Armed with a good idea of what variables to select for our model, we had to figu
 As the plot above shows, certain variables are plagued by missingness. We dealt with this in two ways:
 
 1. Don't use variables with > 30% missing data. This is certainly a constraint, but it would be irresponsible to generate estimates which could be biased by missingness.
-2. Randomnly impute missing data.  Since each variable in the AHS is a binary indicator, we impute the missing data by sampling from it's existing distribution.
+2. Randomly impute missing data.  Since each variable in the AHS is a binary indicator, we impute the missing data by sampling from it's existing distribution.
 
 ### Rank Deficiency
 Only 4% of respondents answered negatively to the question "Do you have a working smoke alarm." For such rare events, it can be difficult to generate robust coefficients.  We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from each of these iterations.
