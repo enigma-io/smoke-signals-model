@@ -24,6 +24,9 @@ source('rscripts/clean.R')
 
 require(ggplot2)
 require(plyr)
+require(glmnet)
+require(doMC)
+registerDoMC()
 ```
 
 ## Explore Missing Data
@@ -156,6 +159,52 @@ ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
   theme_enigma()
 ```
 
+## Variable Selection
+```{r variable-selection}
+
+# drop groups with too much missing data.
+ignore_groups = c('pvalue', 'vacancy', 'zincn', 'qfs1', 'rent', 'lprice')
+idx = c()
+for (g in ignore_groups) {
+  idx <- c(idx, group_to_idx[[g]])
+}
+d <- d[,-(idx)]
+
+# randomly impute missing data.
+# A function for imputing missing data by sampling from a column's distribution
+na_roughfix_sample <- function (object) {
+    res <- lapply(object, roughfix_sample)
+    structure(res, class = "data.frame", row.names = seq_len(nrow(object)))
+  }
+
+roughfix_sample <- function(x) {
+  missing <- is.na(x)
+  if (!any(missing)) return(x)
+  x[missing] <- sample(x[!missing], length(missing), replace=T)
+  return(x)
+}
+d <- na_roughfix_sample(d)
+
+# initially run lasso regression with 10-folds cross validation to determine 
+# ideal value of lambda
+m <- as.matrix(d[,7:ncol(d)])
+
+cvfit <- cv.glmnet(m, d$smoke, 
+                  family = "binomial", type.measure = "class", alpha=0.1, nfolds=10)
+l <- cvfit$lambda.min
+
+
+# generate predictions and get list of coefficients
+res <- predict(cvfit, s=l, type='coefficients')
+res
+res <- as.matrix(res)
+res <- data.frame(variable=row.names(res), coefficient=as.numeric(res))
+res <- res[order(res$coefficient, decreasing=T), ]
+names(res) = c('variable', 'coefficient')
+```
+
+
+
 ## Generating the model
 
 Armed with a good idea of what variables to select for our model, we had to figure out a good set of methodologies for dealing with two data issues:
@@ -189,22 +238,6 @@ f <- smoke ~  built_1980_to_1989 + built_1960_to_1969 + built_2010_to_later +
 # a list of rows which have postive and negative outcomes.
 idx_no_smoke <- which(d$smoke != 1)
 idx_smoke <- which(d$smoke == 1)
-
-# A function for imputing missing data by sampling from a column's distribution
-na_roughfix_sample <- function (object) {
-    res <- lapply(object, roughfix_sample)
-    structure(res, class = "data.frame", row.names = seq_len(nrow(object)))
-  }
-
-roughfix_sample <- function(x) {
-  missing <- is.na(x)
-  if (!any(missing)) return(x)
-  x[missing] <- sample(x[!missing], length(missing), replace=T)
-  return(x)
-}
-
-# impute missing data.
-d <- na_roughfix_sample(d)
 
 # A function for estimating coefficients for a single iteration.
 estimate_coefs_i <- function(i, chunk_size=3000, per_negative=0.5) {
