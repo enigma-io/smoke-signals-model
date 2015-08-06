@@ -47,6 +47,9 @@
 
 \documentclass{sig-alternate}
 \usepackage{minted}
+\usepackage{xcolor,listings}
+\usepackage{textcomp}
+\lstset{upquote=true}
 
 \begin{document}
 %
@@ -79,7 +82,7 @@
 % without further effort on your part as the last section in
 % the body of your article BEFORE References or any Appendices.
 
-\numberofauthors{2} %  in this sample file, there are a *total*
+\numberofauthors{3} %  in this sample file, there are a *total*
 % of EIGHT authors. SIX appear on the 'first-page' (for formatting
 % reasons) and the remaining two appear in the \additionalauthors section.
 %
@@ -94,6 +97,10 @@
 % affiliation/address with \affaddr, and tag the
 % e-mail address with \email.
 %
+\alignauthor
+Marc DaCosta\\
+       \affaddr{Co-founder, Enigma}\\
+       \email{marc@enigma.io}
 \alignauthor
 Jeremy Krinsley\\
        \affaddr{Engineer, Enigma}\\
@@ -117,36 +124,32 @@ We can expect 20,000 people to be injured or killed by fires in the United State
 
 A broad range of people are trying to address this problem, from local fire departments to the Red Cross. However, they all face the same problem: What door do we knock on first?
 
-A community knows best which blocks and which citizens are at risk for injury or death in a fire. First responders and outreach organizations know the facts of their municipality better than a dataset ever can. Firemen know their districts; Red Cross volunteers and religious organizations know their local residents. These are the instincts that up to now have been the primary, if not the only resources available to identify at-risk homes and residents. 
+A community knows best which blocks and which citizens are at risk for injury or death in a fire. First responders and outreach organizations know the facts of their municipality better than a dataset ever can: firemen know their districts; Red Cross volunteers and religious organizations know their local residents. These are the instincts that up to now have been the primary, if not the only resources available to identify at-risk homes and residents. 
 
-With that in mind, we have gone farther than any previous effort to rank likelihood of fire risk by city block in the hopes that our work can offer more precise, granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas. We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data into the model.
+With that in mind, we have gone farther than any previous effort to rank likelihood of fire risk by city block in the hopes that our work can offer more precise and granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking by city block for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas (MSAs). We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data via an API into our model.
 
-Prioritizing outreach efforts for fire prevention can be difficult without access to data and analytics that identify houses at risk for not having a smoke alarm. By drawing together many different public data sets, we have developed a predictive model that helps identify hot spots for homes that are unlikely to have smoke alarms. 
-
-Our goal is to provide a tool that helps fire departments and other groups work more efficiently. Local fire department outreach coordinators can combine their on-the-ground knowledge about their areas with trained models scored at a newly enhanced geographic granularity. Before this project, this resolution simply did not exist.
-
-This is only a first step. We are also releasing all of the data, components and algorithms that make this tool work in hopes that others can improve upon what we have begun.
-
-\section{Collaborators}
+\section{Background}
 
 In November of 2014 there was a house fire in the Broadmoor neighborhood of New Orleans, killing five people, including three children. The house did not have a smoke alarm in it. Enigma began working with New Orleans' Fire Department and Office of Performance and Accountability to develop a model that identified New Orleans blocks least likely to have smoke alarms, and most likely to experience a fire fatality. This enabled the New Orleans Fire Department to conduct a door-to-door outreach campaign to place smoke alarms in as many at risk homes as possible. Drawing on the learnings from New Orleans, we extended the model to apply to the entire United States, in hopes that more people can use and improve on our insights.
 
+
+\section{Collaborators}
 Data Kind /Red Cross
 
 
 \section{Components}
 
-The risk model and resulting tools were built off of a number of different federal census datasets. Below we outline these datasets and the ways in which we used them.
+The risk model and resulting tools were built off of a number of different federal census datasets. Below we outline these datasets and the ways in which we used them. We are also releasing all of the data components and algorithms that make this tool work, in hopes that others can improve upon what we have begun.
 
 \subsection{AHS/ACS Merge}
 
-The central crux of our work employs a systematic join of the American Housing Survey (AHS), a resource for nationally-representative, detailed housing characteristics, and the American Community Survey (ACS), the census' most extensive and thorough demographic survey. This merge generates meaningful local data from a Federal dataset that was once used only to describe characteristics normalized at the level of entire cities.
+The central crux of our work employs a systematic join of the American Housing Survey (AHS), a resource for nationally-representative, detailed housing characteristics, and the American Community Survey (ACS)\footnote{https://github.com/enigma-io/ahs-acs}, the census' most extensive and thorough demographic survey. This merge generates meaningful local data from a federal dataset that was once used only to describe characteristics normalized at the level of entire cities.
 
-Making the ACS-AHS merge a machine-readable process greatly enhances the value of the data in the American Housing Survey, and by extension, enriches what we can learn about a given few blocks within the biggest metro-areas in the U.S. We are not the first\footnote{http://www.census.gov/content/dam/Census/programs-surveys/ahs/publications/CombiningAHS-ACS.pdf} to attempt a method for explaining the relationship between the two datasets. However, to the best of our knowledge, we have gone the furthest in making that process programmatic.
+Making the ACS-AHS merge a machine-readable process greatly enhances the value of the data in the AHS, and by extension, enriches what we can learn about a given few blocks within the biggest metro-areas in the U.S. We are not the first\footnote{http://www.census.gov/content/dam/Census/programs-surveys/ahs/publications/CombiningAHS-ACS.pdf} to attempt a method for explaining the relationship between the two datasets. However, to the best of our knowledge, we have gone the furthest in making that process programmatic and fully machine-readable.
 
-Many questions asked in the AHS directly mirror those asked in the ACS. For instance, both surveys ask about a respondent's age. While the ACS groups these responses into bucketed counts per block group (i.e. "Males under the age of 5" or "Females between the ages of 70 and 74"), the AHS simply records the respondent's actual age (4 or 72). While both surveys capture the same concept, they each record this information in different ways. Our merge enables translations between the two surveys by mapping these concepts into a common schema. This is useful as it allows models trained on AHS data to be scored on ACS data. For an example of such an application, check out this project.
+Many questions asked in the AHS directly mirror those asked in the ACS. For instance, both surveys ask about a respondent's age. While the ACS groups these responses into bucketed counts per block group (i.e. "Males under the age of 5" or "Females between the ages of 70 and 74"), the AHS simply records the respondent's actual age (4 or 72). While both surveys capture the same concept, they each record this information in different ways. Our merge enables translations between the two surveys by mapping these concepts into a common schema. This is useful as it allows models trained on AHS data to be scored on ACS data. 
 
-We came up with these mappings by scanning the AHS Codebook for questions that were also asked in the ACS. For the most part, these were demographic variables and information about a respondent's household. In the case of the AHS, responses are recorded in categories (i.e. "married" = 3 and "divorce" = 4), or continuous numbers ("year house built" = 1964). On the other hand, as mentioned above, the ACS buckets responses by counts for census geographies like block groups and tracts. In order to map the two surveys, we had to similarly bucket AHS responses into binary indicators. Here's an example of what this process looks like for "Marital Status":
+We came up with these mappings by scanning the AHS Codebook for questions that were also asked in the ACS. For the most part, these were demographic variables and information about a respondent's household. In the case of the AHS, responses are recorded in categories (i.e. "married" = 3 and "divorce" = 4), or continuous numbers ("year house built" = 1964). On the other hand, as mentioned above, the ACS buckets responses by counts for census geographies, like block groups and tracts. In order to map the two surveys, we had to similarly bucket AHS responses into binary indicators. Here's an example of what this process looks like for "Marital Status":
 \begin{minted}[
 	frame=none,
 	breaklines=true
@@ -180,54 +183,162 @@ We came up with these mappings by scanning the AHS Codebook for questions that w
 
 \subsection{TIGER Geocoder}
 
-We used the Census TIGER Geocoder in order to map our risk scores to specific geographical boundaries within the cities we analyzed. We also used the TIGER data to create a master CSV of all street blocks within these geographies, organized by address ranges, so that we could associate addresses with risk scores.  We also are releasing a version of TIGER that makes it easy for anyone to spin up a geocoder\footnote{https://github.com/enigma-io/ansible-tiger-geocoder-playbook}. 
+The Census Bureau maintains a comprehensive and deeply granular dataset of geographical features for the United States. The Topologically Integrated Geographic Encoding and Referencing (TIGER) dataset contains ESRI shapefiles that describe boundaries from the state level down to census blocks, and includes a diverse collection of geographies in between, from congressional districts to tribal reservations. By loading these files into a database capable of spatial queries, we gain the ability to situate the results of our risk model in specific areas of cities, and even on specific street blocks.
 
-\subsubsection{Geographic Join}
+We used the Census TIGER dataset in conjunction with the PostGIS TIGER geocoder extension for the PostgreSQL database. It should be noted that our entire stack is fully open source and free to reproduce. To that end, we built a package that makes it easy for civic coders with basic skills to spin up the spatial tools that we employed for this project.\footnote{https://github.com/enigma-io/ansible-tiger-geocoder-playbook} 
 
-Each record in the American Community Survey maps to a census block group, the smallest geographical entity deemed to still present valid sample data, which can range from a population of 600 to 3,000 citizens. Of the total 220,740 block groups in the U.S., we generated relevant scores for the NUMBER with a population density over RATIO that fell within one of the NUMBER MSAs we deemed data-rich enough to provide reliable scores.
+\subsubsection{Block Group Geographic Join}
 
-Do we want to go into detail here about the actual PostGIS queries or logic?
+We first relied on the TIGER dataset to map our risk scores to specific geographical boundaries within the cities we analyzed. Each record in the ACS maps to a census block group, an area that can range in population from 600 to 3,000 citizens, and which is considered the smallest geographical entity deemed to still present valid sample data. This means that census block groups are highly variable in area. In a place like New York City, a census block group will consist of only a few blocks, whereas some areas of Alaska contain block groups that are thousands of square miles.
 
-\subsubsection{Creating Address Tables}
+As mentioned above in RISK MODEL, the results of AHS are normalized over Census-designated metropolitan statistical areas. Likewise, of the total 220,740 block groups in the U.S., we generated relevant scores for the NUMBER with a population density over RATIO that fell within one of the NUMBER MSAs we deemed data-rich enough to provide reliable scores.
 
-The TIGER data collection includes a comprehensive ADDRFEAT table that, among other properties, lists every block in the U.S., and includes such features as the name of the street and the address range for the left and right sides of the street. Using geospatial querying in PostGIS, we grouped these address ranges by census block groups, and thereby joined every city block and address range to the relevant census block score  in our model.
+Finding the relevant block groups using these aforementioned tools is relatively trivial. For instance, to find block group ids that are in any given MSA, the query looks like:
 
-\section{Tools}
+\begin{lstlisting} [
+           language=SQL,
+           showspaces=false,
+           basicstyle=\ttfamily,
+           numbers=left,
+           numberstyle=\tiny,
+           commentstyle=\color{gray},
+           breaklines=true
+        ]
+SELECT 
+  bg_id as block_group_id
+FROM 
+  -- the block groups TIGER table
+  tiger.bg, 
+  -- the MSAs TIGER table
+  -- for metro and micro areas
+  tiger.cbsa
+WHERE 
+  -- the lsad field is 'M1' for metro 
+  -- and 'M2' for micro
+  tiger.cbsa.lsad='M1'
+AND
+  ST_Intersects(
+    tiger.bg.the_geom,
+    tiger.cbsa.the_geom
+   )
+\end{lstlisting}
 
-\subsection{Address/Score CSV}
+\subsubsection{Address Range Resolution}
 
-The result of the geospatial joins between our model and street addresses in TIGER are CSVs for every city that falls within the census' designated Metropolitan Statistical Area. Each record in the CSV lists a street name, street 'start' address and 'end' address, a risk score, and the state and county within which the block is located, along with details about the block group associated with the street.
+We also used the TIGER data to create a master CSV of all street blocks that fell within geographies we analyzed, coupled with their risk scores.
 
-These CSVs were built with the intention that they would provide maximum value to local first responder and outreach communities. The data model was designed so that someone with rudimentary ability to order an Excel spreadsheet could quickly organize a list of the highest risk blocks by street name and address range for their local districts and areas of interest.
+The TIGER data collection includes a comprehensive address ranges table that defines every street, by block, in the U.S. The 2.9m row table includes the name of a street and its left and right-side address ranges. Using geospatial querying in PostGIS, we grouped these address ranges by census block groups, and thereby joined every city block and address range to the relevant census block score in our model. 
+
+The method employed for this was simple: for each street in the address features table, shift the line-segment defined as that street's geographical location a few meters to the left, and then a few to the right, and join these off-based line-segments to the census block geographies within which they fall. This small geographical transform for each street reduced the ambiguities that arise when streets form the border between two census block groups. In those cases, addresses on side A of a street ought to be associated with census block group A, and addresses on side B ought to be associated with census block group B. Without enacting this small transform, addresses will associate with both block groups they border, rather than the one they are actually within.
+
+The query ultimately joins the two shifted street sides:
+
+\begin{lstlisting} [
+           language=SQL,
+           showspaces=false,
+           basicstyle=\ttfamily,
+           numbers=left,
+           numberstyle=\tiny,
+           commentstyle=\color{gray},
+           breaklines=true
+        ]
+with right_side as (
+    SELECT distinct
+        block_group.bg_id as block_group_id,
+        right_side.fullname as street_name,
+        right_side.lfromhn as from_addr,
+        right_side.ltohn as to_addr
+    FROM
+        tiger.addrfeat as right_side,
+        tiger.bg as block_group
+    WHERE ST_Intersects(block_group.the_geom, right_side.the_geom)
+    -- intersections of 0 length occur!
+    AND St_Length(ST_Intersection(block_group.the_geom, right_side.the_geom)) > 0
+    AND ST_Intersects(
+        -- offset the street by a small margin
+        ST_OffsetCurve(ST_LineMerge(right_side.the_geom), .00001),
+        tiger.bg.the_geom
+    )
+)
+
+-- identical to right_side, with offset curve set negative
+with left_side as (
+    SELECT distinct
+        block_group.bg_id as block_group_id,
+        left_side.fullname as street_name,
+        left_side.lfromhn as from_addr,
+        left_side.ltohn as to_addr
+    FROM
+        tiger.addrfeat as left_side,
+        tiger.bg as block_group
+    WHERE ST_Intersects(block_group.the_geom, left_side.the_geom)
+    -- intersections of 0 length occur!
+    AND St_Length(ST_Intersection(block_group.the_geom, left_side.the_geom)) > 0
+    AND ST_Intersects(
+        -- offset the street by a small margin
+        ST_OffsetCurve(ST_LineMerge(left_side.the_geom), -.00001),
+        tiger.bg.the_geom
+    )
+)
+
+SELECT * FROM left_side
+UNION ALL
+SELECT * FROM right_side
+\end{lstlisting}
+
+This query fails to return distinct results when streets are simultaneously extremely curvy and very close to each other. There are a low number occurrences of this anomaly out of 14,677,020 distinct listed street ranges, 99.51\% fall within a single block group, .49\% fall within two, and only 103 blocks fall within three. Clearly there is space here to refine our work, but for practical applications, the duplication of streets within block groups are not significant enough to truly hamper outreach work on the ground.
+
+\section{Civic Tools}
+
+The primary purpose of this project was not analysis and research, but rather a suite of open-sourced tools that make decision-making easier for fire departments and organizations involved in fire risk mitigation. Here we outline the primary output of our efforts to date.
+
+\subsection{Smoke Risk Portal}
+
+All of the tools outlined below are hosted on our site, which is designed to engage directly with those who are most likely to use them. 
 
 \subsection{Interactive Map}
 
-Included in out presentation of the risk model is a slippy map that enables a quick bird's eye view of the relative risks of areas in a given community. The map is BRIEF EXPLANATION OF FEATURES
+We designed a granular map for every geography we analyzed so that those involved in outreach can quickly assess the relative weights we have applied to their particular locality. The map depicts census block groups for each of the NUMBER MSAs for which our model applies, shaded to reflect relative likelihood that an area contains households that do not have a smoke alarm.
 
 IMAGE OF MAP
 
-\subsection{Data Augmentation}
-Our model is built entirely from federal data.  We are able to further enhance our risk scores by understanding where fires have actually occurred in the past. If someone with access to local fire incident uploads data, we will rerun our model and generate fresh scores for the community for which that data applies.
+\subsection{Address/Score CSV}
+
+While the map offers an immediate bird's eye view of the model, we offer risk scores by address ranges as a downloadable CSV.
+
+These CSVs are the result of joining the geospatial analysis above with our model. Each record in the CSV lists a street name, street ``start'' address and ``end'' address, a risk score, and the state and county within which the block is located, along with details about the block group associated with the street.
+
+SAMPLE TABLE HERE
+
+These CSVs were built with the intention that they would provide maximum value to local first responder and outreach communities. The data model was designed so that someone with rudimentary ability to order an Excel spreadsheet could quickly organize a list of the highest risk blocks by street name and address range for their local districts and areas of interest.
+
+\subsection{Data Augmentation API}
+While our model is built entirely from federal data, our initial work with the city of New Orleans also factored in local fire incident data. In that spirit, we built an analysis API that further enhance our risk scores when local fire incident is uploaded to an endpoint.  Understanding where fires have occurred in the past allows us to re-weight our scores and to further hone our ability to serve reliable predictions. 
+
+BRIEF EXPLANATION OF EXTRA ANALYSIS WORK
+
+By uploading a CSV of local fire incident data, the augmentation pipeline re-runs our model and generates fresh scores for the community for which that data applies.
 
 The csv must include:
 \begin{itemize}
-\item a latitude column (?latitude?)
-\item a longitude column (?longitude?)
+\item a latitude column (``latitude'')
+\item a longitude column (``longitude'')
 \item each row must represent a fire incident
 \end{itemize}
 
-Our analysis pipeline disregards any additional features in the CSV beyond these simple requirements, thereby reducing the amount of data munging required to generate enhanced scores.
-
+It should be noted that our analysis pipeline disregards any additional features in the CSV beyond these simple requirements, thereby reducing the amount of data munging required to generate enhanced scores.
 
 \section{Conclusion}
 
-Still a work in progress
+Prioritizing outreach efforts for fire prevention can be difficult without access to data and analytics that identify houses at risk for not having a smoke alarm. By drawing together many different public data sets, we have developed a predictive model that helps identify hot spots for homes that are unlikely to have smoke alarms. 
 
-Built without a training set
+Our goal is to provide a tool that helps fire departments and other groups work more efficiently. Local fire department outreach coordinators can combine their on-the-ground knowledge about their areas with trained models scored at a newly enhanced geographic granularity. 
 
-Results still coming in
+This is only a first step. The City of New Orleans will soon release its first round of results around their data-driven outreach program. That will provide valuable insight into ways that our model can be improved since we currently rely on federal data without the assistance of a reliable training set to verify results. Even this, though, is a step forward. It is fair to say that before this project, the geographical resolution on fire risk developed here simply did not exist.
 
-More granular than anything that's come before it
+
+
+
 
 % The remainder of this document is concerned with showing, in
 % the context of an ``actual'' document, the \LaTeX\ commands
