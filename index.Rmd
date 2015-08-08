@@ -25,8 +25,7 @@ source('rscripts/clean.R')
 require(ggplot2)
 require(plyr)
 require(glmnet)
-require(doMC)
-registerDoMC()
+require(pROC)
 ```
 
 ## Explore Missing Data
@@ -184,23 +183,6 @@ roughfix_sample <- function(x) {
   return(x)
 }
 d <- na_roughfix_sample(d)
-
-# initially run lasso regression with 10-folds cross validation to determine 
-# ideal value of lambda
-m <- as.matrix(d[,7:ncol(d)])
-
-cvfit <- cv.glmnet(m, d$smoke, 
-                  family = "binomial", type.measure = "class", alpha=0.1, nfolds=10)
-l <- cvfit$lambda.min
-
-
-# generate predictions and get list of coefficients
-res <- predict(cvfit, s=l, type='coefficients')
-res
-res <- as.matrix(res)
-res <- data.frame(variable=row.names(res), coefficient=as.numeric(res))
-res <- res[order(res$coefficient, decreasing=T), ]
-names(res) = c('variable', 'coefficient')
 ```
 
 
@@ -235,6 +217,27 @@ f <- smoke ~  built_1980_to_1989 + built_1960_to_1969 + built_2010_to_later +
               hfuel_wood + 
               mg_yes
 
+m <- glm(f, data=d, family=binomial)
+p <- predict(m, type='response')
+g <- roc(d$smoke  ~ p)
+
+g_d <- data.frame(specificities=g$specificities, sensitivities=g$sensitivities)
+
+ggplot(g_d, aes(x=specificities, y=sensitivities)) + 
+  geom_line(color=BLUE, size=1.25) + 
+  xlim(1, 0) + 
+  geom_abline(intercept = 1, slope=1) + 
+  theme_enigma() + 
+  labs(title='ROC Curve For Smoke Alarm Risk') + 
+  xlab('Specificities') + 
+  ylab('Sensitivities')
+
+
+
+
+  
+  
+summary(m)
 # a list of rows which have postive and negative outcomes.
 idx_no_smoke <- which(d$smoke != 1)
 idx_smoke <- which(d$smoke == 1)
@@ -288,6 +291,10 @@ ggplot(coefs, aes(x=reorder(term, estimate), y=estimate)) +
   theme_enigma() 
 ```
 
+
+
+
+
 ## Generating the scores
 
 Now that we have our coefficients, we need to set about applying them to ACS data to generate risk scores for each census block group. 
@@ -300,8 +307,6 @@ acs[is.na(acs)] <- 0
 ```
 
 ```{r compute-risk-scores, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
-
-
 
 # the acs tables have a full geoid, 
 # but we need a simplified it to just 
