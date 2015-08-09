@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  6 AUG 2015 15:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  8 AUG 2015 23:40
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**index.tex
-(./index.tex
+**smoke-alarm-risk.tex
+(./smoke-alarm-risk.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (./sig-alternate.cls
@@ -189,6 +189,13 @@ LaTeX Font Info:    Try loading font information for T1+aer on input line 105.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/ae/t1aer.fd
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
 )))
+
+! LaTeX Error: File `pygmentize.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/minted/minted.sty
 Package: minted 2015/01/31 v2.0 Yet another Pygments shim for LaTeX
 
@@ -265,11 +272,11 @@ Package pdftexcmds Info: \pdfdraftmode found.
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/catchfile.sty
 Package: catchfile 2011/03/01 v1.6 Catch the contents of a file (HO)
 )
-runsystem(uname -s > "index.w18")...executed.
+runsystem(uname -s > "smoke-alarm-risk.w18")...executed.
 
 
-(./index.w18)
-runsystem(rm -- "index.w18")...executed.
+(./smoke-alarm-risk.w18)
+runsystem(rm -- "smoke-alarm-risk.w18")...executed.
 
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/etoolbox/etoolbox.sty
@@ -323,14 +330,17 @@ File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 \@float@every@listing=\toks39
 \c@listing=\count128
 )
-runsystem(mkdir -p "_minted-index")...executed.
+runsystem(mkdir -p "_minted-smoke-alarm-risk")...executed.
 
-runsystem(which "pygmentize" && touch "index.aex")...executed.
+runsystem(which "pygmentize" && touch "smoke-alarm-risk.aex")...executed.
 
-runsystem(rm "index.aex")...executed.
+runsystem(rm "smoke-alarm-risk.aex")...executed.
+
+runsystem(pygmentize -S default -f latex -P commandprefix=PYGdefault > "_minted
+-smoke-alarm-risk/default.pygstyle")...executed.
 
 
-(./_minted-index/default.pygstyle)
+(./_minted-smoke-alarm-risk/default.pygstyle)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
@@ -456,28 +466,28 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
-) (./index.aux)
-\openout1 = `index.aux'.
+)
+No file smoke-alarm-risk.aux.
+\openout1 = `smoke-alarm-risk.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 54.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 54.
-
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 56.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 56.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    ... okay on input line 56.
 
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -511,127 +521,180 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \c@lstlisting=\count143
-LaTeX Font Info:    Try loading font information for U+msa on input line 114.
+LaTeX Font Info:    Try loading font information for U+msa on input line 116.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 114.
+LaTeX Font Info:    Try loading font information for U+msb on input line 116.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 114.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 116.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
 
  []
 
 
-Overfull \hbox (2.65735pt too wide) in paragraph at lines 119--120
+Overfull \hbox (2.65735pt too wide) in paragraph at lines 121--122
 \T1/aer/m/n/9 Civic An-a-lyt-ics, Fire Pre-ven-tion, Cen-sus, ACS, AHS, TIGER
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--120
+Underfull \hbox (badness 10000) in paragraph at lines 121--122
 
  []
 
 
-Overfull \hbox (8.88112pt too wide) in paragraph at lines 146--147
+Overfull \hbox (8.88112pt too wide) in paragraph at lines 148--149
 \T1/aer/m/n/9 the Amer-i-can Hous-ing Sur-vey (AHS), a re-source for nationally
 -
  []
 
 
-Overfull \hbox (7.36513pt too wide) in paragraph at lines 146--147
+Overfull \hbox (7.36513pt too wide) in paragraph at lines 148--149
 \T1/aer/m/n/9 representative, de-tailed hous-ing char-ac-ter-is-tics, and the A
 mer-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 148--148
-[][]\T1/aer/m/n/9 http://www.census.gov/content/dam/Census/programs-
  []
 
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-\openout3 = `index.pyg'.
+Underfull \hbox (badness 10000) in paragraph at lines 150--150
+[][]\T1/aer/m/n/9 http://www.census.gov/content/dam/Census/programs-
+ []
+
+\openout3 = `smoke-alarm-risk.pyg'.
+
+runsystem(pygmentize -l yaml -f latex -F tokenmerge -P style=default -P command
+prefix=PYGdefault -o "_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230
+CC0FA479B990C6F6C4673513D42342EE.pygtex" "smoke-alarm-risk.pyg" )...executed.
 
 
-(./_minted-index/37022F6B398D3A6230F3C0A973344230067601C48AF5F67BA6D34F27E503D1
-D0.pygtex)
-Overfull \hbox (7.38693pt too wide) in paragraph at lines 186--187
+(./_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230CC0FA479B990C6F6C46
+73513D42342EE.pygtex) <missing-data-1.png, id=13, 650.43pt x 505.89pt>
+File: missing-data-1.png Graphic file (type png)
+
+<use missing-data-1.png>
+Package pdftex.def Info: missing-data-1.png used on input line 202.
+(pdftex.def)             Requested size: 273.17873pt x 212.47234pt.
+
+Overfull \hbox (33.17873pt too wide) in paragraph at lines 202--203
+ [][] 
+ []
+
+[2 <./missing-data-1.png>]
+<explore-correlations-1-2.png, id=23, 650.43pt x 505.89pt>
+File: explore-correlations-1-2.png Graphic file (type png)
+
+<use explore-correlations-1-2.png>
+Package pdftex.def Info: explore-correlations-1-2.png used on input line 235.
+(pdftex.def)             Requested size: 273.17873pt x 212.47234pt.
+
+Overfull \hbox (33.17873pt too wide) in paragraph at lines 235--236
+ [][] 
+ []
+
+\openout3 = `smoke-alarm-risk.pyg'.
+
+runsystem(pygmentize -l r -f latex -F tokenmerge -P style=default -P commandpre
+fix=PYGdefault -o "_minted-smoke-alarm-risk/65A0D6180AF27B697F0657AD74AEBE26DEF
+858C7C2439D82CCC713DBA0C47702.pygtex" "smoke-alarm-risk.pyg" )...executed.
+
+
+(./_minted-smoke-alarm-risk/65A0D6180AF27B697F0657AD74AEBE26DEF858C7C2439D82CCC
+713DBA0C47702.pygtex)
+
+./smoke-alarm-risk.tex:292: LaTeX Error: \begin{document} ended by \end{enumera
+te}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.292 \end{enumerate}
+                     
+? 
+./smoke-alarm-risk.tex:292: Extra \endgroup.
+<recently read> \endgroup 
+                          
+l.292 \end{enumerate}
+                     
+? 
+
+Overfull \hbox (7.38693pt too wide) in paragraph at lines 299--300
 \T1/aer/m/n/9 gran-u-lar dataset of ge-o-graph-i-cal fea-tures for the United S
 tates.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 188--188
+Underfull \hbox (badness 10000) in paragraph at lines 301--301
 [][]\T1/aer/m/n/9 https://github.com/enigma-io/ansible-tiger-geocoder-
  []
 
+[3 <./explore-correlations-1-2.png>]
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
 
 LaTeX Font Warning: Font shape `T1/aett/bx/n' undefined
-(Font)              using `T1/aett/m/n' instead on input line 207.
+(Font)              using `T1/aett/m/n' instead on input line 320.
 
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 216
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 329
 .
-LaTeX Font Info:    No file TS1aett.fd. on input line 216.
+LaTeX Font Info:    No file TS1aett.fd. on input line 329.
 
 LaTeX Font Warning: Font shape `TS1/aett/m/n' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textquotesingle' on input line 216.
+(Font)              for symbol `textquotesingle' on input line 329.
 
-[2] [3]
-Overfull \hbox (1.30931pt too wide) in paragraph at lines 318--319
+[4]
+Overfull \hbox (1.30931pt too wide) in paragraph at lines 431--432
 []\T1/aer/m/n/9 BRIEF EX-PLA-NA-TION OF EX-TRA ANAL-Y-SIS WORK 
  []
 
-runsystem(rm "index.pyg")...executed.
+runsystem(rm "smoke-alarm-risk.pyg")...executed.
 
-[4
-
-] (./index.aux)
+[5] (./smoke-alarm-risk.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 7413 strings out of 493089
- 110556 string characters out of 6134842
- 348345 words of memory out of 5000000
- 10739 multiletter control sequences out of 15000+600000
- 50832 words of font info for 69 fonts, out of 8000000 for 9000
+ 7449 strings out of 493089
+ 111599 string characters out of 6134842
+ 338373 words of memory out of 5000000
+ 10761 multiletter control sequences out of 15000+600000
+ 54470 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,42p,823b,1444s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,42p,827b,1444s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/te
-xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texl
-ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive
-/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/20
-15/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2015/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2015/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2015/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2015/texmf-
-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2015/texmf-di
-st/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/font
-s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times
-/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.p
-fb>
-Output written on index.pdf (4 pages, 152797 bytes).
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texl
+ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/local/texl
+ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2
+015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2015
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2015/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2015/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2015/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2015/texmf-di
+st/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2015/texmf-dist
+/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/
+type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/u
+rw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/u
+tmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
+>
+Output written on smoke-alarm-risk.pdf (5 pages, 241668 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
- 51 compressed objects within 1 object stream
+ 87 PDF objects out of 1000 (max. 8388607)
+ 60 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

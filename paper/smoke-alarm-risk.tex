@@ -46,7 +46,9 @@
 % For tracking purposes - this is V2.0 - May 2012
 
 \documentclass{sig-alternate}
+\usepackage{pygmentize}
 \usepackage{minted}
+\usepackage{graphicx}
 \usepackage{xcolor,listings}
 \usepackage{textcomp}
 \lstset{upquote=true}
@@ -126,7 +128,7 @@ A broad range of people are trying to address this problem, from local fire depa
 
 A community knows best which blocks and which citizens are at risk for injury or death in a fire. First responders and outreach organizations know the facts of their municipality better than a dataset ever can: firemen know their districts; Red Cross volunteers and religious organizations know their local residents. These are the instincts that up to now have been the primary, if not the only resources available to identify at-risk homes and residents. 
 
-With that in mind, we have gone farther than any previous effort to rank likelihood of fire risk by city block in the hopes that our work can offer more precise and granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking by city block for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas (MSAs). We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data via an API into our model.
+With that in mind, we have gone farther than any previous effort to rank likelihood of smoke alarm risk by city block in the hopes that our work can offer more precise and granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking by city block for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas (MSAs). We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data via an API into our model.
 
 \section{Background}
 
@@ -180,6 +182,117 @@ We came up with these mappings by scanning the AHS Codebook for questions that w
 
 \subsection{Risk Model}
 
+Armed with this novel dataset, we set about to develop a model which would estimate a census block group's risk for having residents who lacked a smoke alarm.  The basic approach is as follows:
+
+\begin{enumerate} 
+\item Leverage exploratory analysis to select an appropriate sample from the AHS.
+\item Train a national-level model on the AHS.
+\item Train one model for each MSA in the AHS.
+\item Score the national and MSA-level models on the ACS.
+\item Weight national and MSA-level scores based on model strength to create final risk score.
+\ldots 
+\end{enumerate}
+
+\subsubsection{Handling Missing Data in the AHS}
+
+The AHS does not require that subjects respond to all questions. As a result, there's a lot of missing data. We deal with this problem via the following steps:
+
+\begin{figure}
+\centering 
+\includegraphics[scale=0.42]{missing-data-1.png}
+\caption{Missing data in the AHS by variable group}
+\end{figure}
+
+\begin{enumerate} 
+\item Drop all observations with greater than 90\% of missing variables. 
+\item Drop all observations with a missing dependent variable.
+\item Drop all variable groups with greater than 50\% of missing data (Figure 1).
+\item Randomly impute missing data by sampling from it's existing distribution.
+\ldots 
+\end{enumerate}
+
+Out of the 186448 rows in the AHS, we were able to keep 155108 rows through this process, or 83.2\% of the total. 
+
+\subsubsection{Covariate Selection}
+
+Through a simple correlation analysis, we settled on number of variable groups to model in the AHS:
+
+\begin{itemize} 
+\item built - The year the household was built. 
+\item poor - Percentage of income relative to the poverty level. observations with a missing dependent variable.
+\item hhmove - The year the current resident moved in.
+\item hhgrad - The eduction level of the homeowner.
+\item hhrace - The race of the homeowner.
+\item hhspan - Whether the homeowner is of hispanic descent.
+\item hfuel - The type of fuel the home uses for heating. 
+\item tenure - The rental status of the homeowner.
+\item mg - The mortgage status of the homeowner.
+\ldots 
+\end{itemize}
+
+\begin{figure}
+\centering 
+\includegraphics[scale=0.42]{explore-correlations-1-2.png}
+\caption{Mean absolute correlations with "smoke" by variable group}
+\end{figure}
+
+These groups translated into the following model (written in R syntax):
+
+\begin{minted}[
+	frame=none,
+	breaklines=true
+]{r}
+# our model's formula
+f <- smoke ~  
+       built_1980_to_1989 +
+       built_1960_to_1969 +
+       built_2010_to_later +
+       built_1990_to_1999 +
+       built_1950_to_1959 +
+       built_1939_or_earlier +
+       poor_50_to_99 +
+       poor_under_50  +
+       poor_184_to_199 +
+       poor_125_to_149 +
+       poor_100_to_124 +
+       poor_150_to_184 +
+       hhmove_moved_in_1990_to_1999 +
+       hhmove_moved_in_1969_or_earlier +
+       hhmove_moved_in_2000_to_2009 +
+       hhmove_moved_in_1970_to_1979 +
+       hhmove_moved_in_1980_to_1989 +
+       hhgrad_associates_degree +
+       hhgrad_7th_or_8th_grade +
+       hhgrad_9th_grade +
+       hhgrad_doctorate_degree +
+       hhgrad_5th_or_6th_grade +
+       hhgrad_regular_high_school_grad +
+       hhgrad_bachelors_degree +
+       hhgrad_1st_2nd_3rd_4th_grade +
+       hhgrad_11th_grade +
+       hhgrad_less_than_1st_grade  +
+       hhgrad_12th_grade_no_diploma +
+       hhrace_hawaiian_pac_isl_only +
+       hhrace_asian_only +
+       hhrace_other +
+       hhrace_black_only +
+       hhrace_native_am_only +
+       hh_white_only+
+       hhspan_yes +
+       tenure_renter_occupied +
+       hfuel_wood +
+       mg_yes
+\end{minted}
+
+
+
+While people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes, people who hadn't changed their batteries in the past 6 months tended to be highly educated, have mortgages, and live in newer construction buildings.
+
+
+\end{enumerate}
+
+
+lorem ipsum
 
 \subsection{TIGER Geocoder}
 

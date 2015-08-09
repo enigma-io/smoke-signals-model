@@ -22,9 +22,13 @@ source('rscripts/plot_theme.R')
 # clean the data.
 source('rscripts/clean.R')
 
+# load modeling utilities
+source('rscripts/model.R')
+
 require(ggplot2)
 require(plyr)
 require(glmnet)
+require(scales)
 require(pROC)
 ```
 
@@ -168,7 +172,7 @@ for (g in ignore_groups) {
   idx <- c(idx, group_to_idx[[g]])
 }
 d <- d[,-(idx)]
-
+names(d)
 # randomly impute missing data.
 # A function for imputing missing data by sampling from a column's distribution
 na_roughfix_sample <- function (object) {
@@ -185,16 +189,14 @@ roughfix_sample <- function(x) {
 d <- na_roughfix_sample(d)
 ```
 
-
-
-## Generating the model
+## Generating the national model
 
 Armed with a good idea of what variables to select for our model, we had to figure out a good set of methodologies for dealing with two data issues:
 
 ### Missing Data
 As the plot above shows, certain variables are plagued by missingness. We dealt with this in two ways:
 
-1. Don't use variables with > 30% missing data. This is certainly a constraint, but it would be irresponsible to generate estimates which could be biased by missingness.
+1. Don't use variables with > 50% missing data. This is certainly a constraint, but it would be irresponsible to generate estimates which could be biased by missingness.
 2. Randomly impute missing data.  Since each variable in the AHS is a binary indicator, we impute the missing data by sampling from it's existing distribution.
 
 ### Rank Deficiency
@@ -215,12 +217,14 @@ f <- smoke ~  built_1980_to_1989 + built_1960_to_1969 + built_2010_to_later +
               hhgrad_less_than_1st_grade  + hhgrad_12th_grade_no_diploma + hhspan_yes + 
               tenure_renter_occupied + 
               hfuel_wood + 
+              hhrace_hawaiian_pac_isl_only + hhrace_asian_only + hhrace_other + 
+              hhrace_black_only + hhrace_native_am_only + hh_white_only +
               mg_yes
 
+# proc curve for insanity test.
 m <- glm(f, data=d, family=binomial)
 p <- predict(m, type='response')
 g <- roc(d$smoke  ~ p)
-
 g_d <- data.frame(specificities=g$specificities, sensitivities=g$sensitivities)
 
 ggplot(g_d, aes(x=specificities, y=sensitivities)) + 
@@ -228,89 +232,213 @@ ggplot(g_d, aes(x=specificities, y=sensitivities)) +
   xlim(1, 0) + 
   geom_abline(intercept = 1, slope=1) + 
   theme_enigma() + 
-  labs(title='ROC Curve For Smoke Alarm Risk') + 
+  labs(title='ROC Curve For National Smoke Alarm Risk') + 
   xlab('Specificities') + 
   ylab('Sensitivities')
 
-
-
-
-  
-  
-summary(m)
-# a list of rows which have postive and negative outcomes.
-idx_no_smoke <- which(d$smoke != 1)
-idx_smoke <- which(d$smoke == 1)
-
-# A function for estimating coefficients for a single iteration.
-estimate_coefs_i <- function(i, chunk_size=3000, per_negative=0.5) {
-   idx_no_smoke_i <- sample(idx_no_smoke, (chunk_size * (1-per_negative)), replace=T)
-   idx_smoke_i <- sample(idx_smoke, (chunk_size * per_negative), replace=T)
-   d_i <- d[c(idx_no_smoke_i, idx_smoke_i), ]
-   d_i$smoke <- as.factor(d_i$smoke)
-   m <- glm(f, data=d_i, family=binomial(link="logit"))
-   o <- as.data.frame(summary(m)$coefficients)
+# generic function for estimating a model given a dataset
+# and formatting the results
+estimate <- function(d) {
+   m <- glm(f, data=d, family=binomial(link="logit"))
+   s_m <- summary(m)
+   o <- as.data.frame(s_m$coefficients)
    o$terms <- rownames(o)
    rownames(o) <- NULL
    names(o) <- c("estimate", "std_error", "z_value", "p_value", "term")
    o$term[1] <- 'intercept'
-   return(o)
+   o$aic <- s_m$aic
+   o$natl_weight <- 1 # placeholder
+   o$msa_weight <- 0 # placeholder
+   o
 }
 
-# run 1000 iterations
-raw_coefs <- ldply(1:1000, estimate_coefs_i)
+# normalize a numeric vector to 0/1 scale
+normscore <- function(x, to=c(0,1)) {
+  v <- (x - min(na.omit(x))) / (max(na.omit(x)) - min(na.omit(x)))
+  rescale(v, to=to)
+}
 
-# plot distribution of raw coeficients per variable
-ggplot(raw_coefs, aes(x=reorder(term, estimate), y=estimate)) +
-  geom_point(alpha=0.2, color=BLUE) +
-  coord_flip() + 
-  xlab('Dep. Variable') + 
-  ylab('Coefficient') +
-  ylim(-2, 2) +
-  labs(title='Coefficients for 1000 iterations') + 
-  theme_enigma()
+# a list of rows which have postive and negative outcomes.
+idx_no_smoke <- which(d$smoke != 1)
+idx_smoke <- which(d$smoke == 1)
 
-# bootstrapped coefficients
-coefs <- ddply(raw_coefs, 'term', summarize, 
+# A function for estimating national coefficients for a single iteration.
+estimate_natl_coefs_i <- function(i, chunk_size, per_negative) {
+   idx_no_smoke_i <- sample(idx_no_smoke, (chunk_size * (1-per_negative)), replace=T)
+   idx_smoke_i <- sample(idx_smoke, (chunk_size * per_negative), replace=T)
+   d_i <- d[c(idx_no_smoke_i, idx_smoke_i), ]
+   d_i$smoke <- as.factor(d_i$smoke)
+   estimate(d_i)
+}
+
+estimate_natl_coefs <- function(n_iter, chunk_size, per_negative) { 
+  raw <- ldply(1:n_iter, estimate_natl_coefs_i, 
+                          chunk_size=chunk_size, per_negative=per_negative ,
+                          .progress = 'text')
+  # bootstrapped coefficients
+  ddply(raw, 'term', summarize, 
                p_value = median(p_value), 
                z_value = median(z_value),
                std_error = median(std_error),
-               estimate = median(estimate),
-               estimate_25_per = as.numeric(quantile(raw_coefs$estimate)[2]),
-               estimate_75_per = as.numeric(quantile(raw_coefs$estimate)[4])
-               )
+               estimate = median(estimate))
+}
 
-# plot the bootstrapped coefficients
-ggplot(coefs, aes(x=reorder(term, estimate), y=estimate)) + 
-  geom_point(fill=RED, color=RED, size=3) +
-  coord_flip() + 
-  geom_pointrange(aes(ymin = estimate - std_error, ymax = estimate + std_error),  color=RED) + 
-  xlab('Variable') + 
-  ylab('Coefficient') +
-  labs(title='Bootstrapped Coefficients and Std. Errors') + 
-  theme_enigma() 
+# plot coefficients of a model
+plot_coefs <- function(coefs, title) {
+  ggplot(coefs, aes(x=reorder(term, estimate), y=estimate)) + 
+    geom_point(fill=RED, color=RED, size=3) +
+    coord_flip() + 
+    geom_pointrange(aes(ymin = estimate - std_error, ymax = estimate + std_error),  color=RED) + 
+    xlab('Variable') + 
+    ylab('Coefficient') +
+    labs(title=title) + 
+    theme_enigma() 
+}
+
+# bootstrap national coefficients
+natl_coefs <- estimate_natl_coefs(
+  n_iter=1000, 
+  chunk_size=1500, 
+  per_negative=0.3)
+
+plot_coefs(natl_coefs, title='National-level Coefficients and Std. Errors')
+
 ```
 
+## Generating the MSA-level models
 
+In order to account for regional-level variation, we model risk for each MSA.  In order to accomplish this, we needed to select particular MSAs which would have enough data to model.
 
+```{r compute-msa-stats}
 
+# compute assessments for msas
+assess_msas <- function(x) {
+  ddply(x, 'smsa', summarize, 
+               n=length(smoke), 
+               n_negative=length(which(smoke==1)),
+               per_negative=length(which(smoke==1))/length(smoke))
+}
 
-## Generating the scores
+msa_t <- assess_msas(d)
+# handle nulls
+msa_t <- msa_t[-(which(msa_t$smsa=="99990")),]
+```
 
-Now that we have our coefficients, we need to set about applying them to ACS data to generate risk scores for each census block group. 
+A histogram of number of respondents per MSA.
+
+```{r compute-msa-stats-histogram}
+ggplot(msa_t, aes(x=n)) + 
+  geom_histogram(binwidth=100, color="white", fill=RED) + 
+  labs(title='Total respondents per MSA') + 
+  xlab('Number of respondents') + 
+  ylab('Count') + 
+  theme_enigma()
+```
+
+A histogram of respondents without smoke alarms  MSA.
+
+```{r compute-msa-stats-histogram-neg}
+ggplot(msa_t, aes(x=n_negative)) + 
+  geom_histogram(binwidth=20, color="white", fill=RED) + 
+  labs(title='Respondents w/o alarms per MSA') + 
+  xlab('Number of respondents w/o alarms') + 
+  ylab('Count') + 
+  theme_enigma()
+```
+
+A scatterplot of, per MSA,  the percentage of respondents without smoke alarms by the 
+total number of respondents.
+
+```{r compute-msa-stats-scatter}
+ggplot(msa_t, aes(x=n, y=per_negative)) + 
+  geom_point(color=RED, alpha=0.5) + 
+  xlab('Respondents') + 
+  ylab('% Without Smoke Alarms') + 
+  labs(title='Assessment of MSA data quality') + 
+  theme_enigma()
+```
+
+Select MSAs with enough data.
+
+```{r select-msas}
+MIN_MSA_OBS <- 60
+MIN_MSA_NEGATIVE_OBS <- 10
+TEST_MSA <- '73600'
+GOOD_MSAS <- msa_t$smsa[msa_t$n>= MIN_MSA_OBS & msa_t$n_negative >= MIN_MSA_NEGATIVE_OBS]
+write(GOOD_MSAS, 'data/msas.txt')
+cat('Selected', length(msas), 'out of', nrow(msa_t), "MSAs")
+cat('Dropped', (1-round(length(msas) / nrow(msa_t), 4)) * 100, '% of MSAs')
+```
+
+```{r estimate-msas, echo=F, warning=F, message=F} 
+
+# min max weights for msa model (based on aic)
+MSA_WEIGHT_RANGE = c(0.25, 0.75)
+
+# a function for computing risk coefficients 
+# for an individual msa
+estimate_msa <- function(msa) { 
+  d_m <- d[d$smsa == msa,]
+  coefs <- estimate(d_m)
+  coefs$smsa <- msa
+  
+  # add msa assessment metrics
+  d_m_t <- assess_msas(d_m)
+  coefs$n <- d_m_t$n
+  coefs$n_negative <- d_m_t$n_negative 
+  coefs$per_negative <- d_m_t$per_negative
+  coefs
+}
+
+cat('Estimating MSA-level coefficients\n')
+msa_coefs <- ldply(msas, estimate_msa, .progress='text')
+
+# create model weight based on AIC
+msa_coefs$msa_weight <- normscore(msa_coefs$aic, to=MSA_WEIGHT_RANGE)
+msa_coefs$natl_weight <- 1 - msa_coefs$msa_weight
+```
+
+Assess How AIC works as a metric for model strength.
+
+```{r estimate-msas-compare-aic, echo=F, warning=F, message=F}
+msa_m_t <- ddply(msa_coefs, 'smsa', summarize,
+              aic = min(aic),
+              msa_weight = min(msa_weight),
+              error = sqrt(sum(log10(std_error + 1))),
+              n = min(n),
+              per_negative = min(per_negative)
+          )
+
+ggplot(msa_m_t, aes(y=aic, x=n)) + 
+  geom_point(color=TEAL, size=3, alpha=0.6) + 
+  ylab('AIC') + 
+  xlab('Respondents') + 
+  labs(title='Model AIC and number of respondents per MSA') +
+  theme_enigma()
+```
+
+```{r estimate-msas-compare-aic-weight}
+ggplot(msa_m_t, aes(x=msa_weight)) +
+  geom_density(fill=TEAL, color="white") + 
+  labs(title='Model Weight per MSA') +
+  xlab('Model weight') + 
+  theme_enigma()
+```
+
+## Generating the risk scores
+
+Now that we have our multi-leveled coefficients, we need to set about applying them to ACS data to generate risk scores for each census block group. 
 
 Since we've already comprehensively mapped variables between the two datasets, this process is relatively straightforward.
+
 ```{r read-in-acs, echo=F, warning=F, message=F}
 # read in the acs and convert nulls -> 0
 acs <- as.data.frame(fread('data/acs.csv'))
 acs[is.na(acs)] <- 0
-```
-
-```{r compute-risk-scores, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
 
 # the acs tables have a full geoid, 
-# but we need a simplified it to just 
-# get block-group summary level
+# but we need a simplified version to just 
+# get the block-group summary level.
 parse_id <- function(x) {
   strsplit(x, 'US')[[1]][2]
 }
@@ -322,42 +450,74 @@ acs$bg_geoid <- as.character(unlist(llply(acs$geoid, parse_id)))
 acs$sum_level <- as.character(unlist(llply(acs$geoid, parse_sum_level)))
 
 # filter to just block groups
-acs <- acs[acs$sum_level == '15000', ]
+acs_bg <- acs[acs$sum_level == '15000', ]
 
 # keep the block group ids for later
-bg_geoid <- acs$bg_geoid
+bg_geoid <- acs_bg$bg_geoid
 
-# get the intercept, terms, and estimates from the bootstrapped parameters
-i <- which(coefs$term=='intercept')
-intercept <- as.numeric(coefs$estimate[i])
-terms <- as.character(coefs$term[-i])
-estimates <- as.numeric(coefs$estimate[-i])
+# join msas to blockgroups.
+j <- read.csv('data/msa_bg.csv', as.is=T)
+j <- j[!is.na(j$smsa),]
+j$bg_geoid <- as.character(j$bg_geoid)
+j$smsa <- as.character(j$smsa)
+acs_bg <- merge(acs_bg, j, by='bg_geoid', all.x=T)
+```
 
-# select the terms from the acs
-acs <- subset(acs, select=terms)
+```{r compute-risk-scores, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
 
-# function for applying an individual score to a term
-score_coef <- function(i){ 
-  t_i <- as.character(terms[i])
-  e_i <- as.numeric(estimates[i])
-  x_i <- as.numeric(acs[, t_i])
-  return(x_i * e_i)
+# function for scoring a dataset 
+compute_score <- function(d, coefs, normalize=F) {
+  # get the intercept, terms, and estimates from the bootstrapped parameters
+  i <- which(coefs$term=='intercept')
+  intercept <- as.numeric(coefs$estimate[i])
+  terms <- as.character(coefs$term[-i])
+  estimates <- as.numeric(coefs$estimate[-i])
+
+  # select the terms from the acs
+  d <- subset(d, select=terms)
+
+  # function for applying an individual score to a term
+  score_coefs <- function(i){ 
+    t_i <- as.character(terms[i])
+    e_i <- as.numeric(estimates[i])
+    x_i <- as.numeric(d[, t_i])
+    return(x_i * e_i)
+  }
+
+  # apply estimates to acs terms
+  score_list <- llply(1:length(terms), score_coefs)
+  names(score_list) <- terms
+  o <- as.data.frame(score_list)
+  score <- rowSums(o)
+  score <- score + intercept
+  score <- 1/(1+exp(-score))
+
+  # normalize
+  if (normalize) {
+    score <- normscore(score)
+  }
+  score 
 }
 
-# apply estimates to acs terms
-score_list <- llply(1:length(terms), score_coef)
-names(score_list) <- terms
-score_df <- as.data.frame(score_list)
-score_df$score <- rowSums(score_df)
-score_df$score <- score_df$score + intercept
-score_df$score <- 1/(1+exp(-score_df$score))
+# function for computing msa scores
+compute_msa_score <- function(msa) { 
+    d_m <- acs_bg[acs_bg$smsa==msa, ]
+    coefs_m <- msa_coefs[msa_coefs$smsa == msa, ]
+    d_m$msa_score  <-  compute_score(d_m, coefs_m, normalize=F) 
+    d_m$msa_weight <- min(coefs_m$msa_weight)
+    d_m$natl_weight <- min(coefs_m$natl_weight)
+    subset(d_m, select=c('bg_geoid', 'smsa', 'msa_score', 'msa_weight', 'natl_weight'))
+}
 
-# normalize
-score_df$score <- (score_df$score - min(score_df$score)) / 
-                  (max(score_df$score) - min(score_df$score))
+# msa_scores <- ldply(msas, compute_msa_score)
+
+
+# compute national score
+natl_score <- compute_score(acs_bg, natl_coefs, normalize=T)
+output <- data.frame(smoke_alarm_risk=natl_score, bg_geoid=bg_geoid)
  
 # plot a histogram of the computed scores
-ggplot(score_df, aes(x=score)) + 
+ggplot(output, aes(x=natl_score)) + 
   geom_histogram(aes(y=..density..), color="white", fill=BLUE, binwidth=0.04) +
   geom_density(color=RED) + 
   theme_enigma() + 
@@ -371,7 +531,6 @@ ggplot(score_df, aes(x=score)) +
 In order to give a better indication of whether a block group is at-risk for fatalities from fires, we also include an indicator for the percentage of the population that is under the age of 5 or over the age of 65 for each block group. We also include the total population to filter out block groups without inhabitants.
 
 ```{r format-output, warning=FALSE, message=FALSE}
-output <- data.frame(smoke_alarm_risk=score_df$score, bg_geoid=bg_geoid)
 at_risk <- as.data.frame(fread('data/acs-bg-at-risk-population.csv'))
 pop <- as.data.frame(fread('data/acs-bg-population.csv'))
 output <- join(output, at_risk, by='bg_geoid')

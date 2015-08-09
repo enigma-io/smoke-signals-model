@@ -20,6 +20,10 @@ model:
 
 	Rscript -e 'knitr::knit2html("./index.Rmd")'
 
+cp_figures:
+	
+	cp figure/*.png paper/
+
 view: 
 
 	python -m SimpleHTTPServer
