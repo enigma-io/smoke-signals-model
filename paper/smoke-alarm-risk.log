@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 AUG 2015 01:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 AUG 2015 04:44
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -598,8 +598,12 @@ Overfull \hbox (33.17873pt too wide) in paragraph at lines 227--228
 
 \openout3 = `smoke-alarm-risk.pyg'.
 
+runsystem(pygmentize -l r -f latex -F tokenmerge -P style=default -P commandpre
+fix=PYGdefault -o "_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF
+858C7C2439D82CCC713DBA0C47702.pygtex" "smoke-alarm-risk.pyg" )...executed.
 
-(./_minted-smoke-alarm-risk/65A0D6180AF27B697F0657AD74AEBE26DEF858C7C2439D82CCC
+
+(./_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF858C7C2439D82CCC
 713DBA0C47702.pygtex) <generate-model-2.png, id=25, 650.43pt x 505.89pt>
 File: generate-model-2.png Graphic file (type png)
 
@@ -705,6 +709,9 @@ Overfull \hbox (15.59483pt too wide) in paragraph at lines 477--478
 abases
  []
 
+runsystem(rm "_minted-smoke-alarm-risk/65A0D6180AF27B697F0657AD74AEBE26DEF858C7
+C2439D82CCC713DBA0C47702.pygtex")...executed.
+
 runsystem(rm "smoke-alarm-risk.pyg")...executed.
 
 [7
@@ -715,8 +722,8 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 7479 strings out of 493089
- 112625 string characters out of 6134842
+ 7480 strings out of 493089
+ 112689 string characters out of 6134842
  391816 words of memory out of 5000000
  10783 multiletter control sequences out of 15000+600000
  54470 words of font info for 77 fonts, out of 8000000 for 9000
@@ -739,7 +746,7 @@ type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/u
 rw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/u
 tmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
 >
-Output written on smoke-alarm-risk.pdf (7 pages, 385589 bytes).
+Output written on smoke-alarm-risk.pdf (7 pages, 385582 bytes).
 PDF statistics:
  107 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream

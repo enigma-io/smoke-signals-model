@@ -91,7 +91,3 @@ d <- d[keep_rows,]
 # fix smoke + battery
 d$smoke = d$smoke - 1
 d$battery = d$battery - 1
-
-# fix msa 
-d$smsa <- paste0(as.character(d$smsa), '0')
-

@@ -172,7 +172,7 @@ for (g in ignore_groups) {
   idx <- c(idx, group_to_idx[[g]])
 }
 d <- d[,-(idx)]
-names(d)
+
 # randomly impute missing data.
 # A function for imputing missing data by sampling from a column's distribution
 na_roughfix_sample <- function (object) {
@@ -199,7 +199,7 @@ As the plot above shows, certain variables are plagued by missingness. We dealt 
 1. Don't use variables with > 50% missing data. This is certainly a constraint, but it would be irresponsible to generate estimates which could be biased by missingness.
 2. Randomly impute missing data.  Since each variable in the AHS is a binary indicator, we impute the missing data by sampling from it's existing distribution.
 
-### Rank Deficiency
+### Rank deficiency
 Only 4% of respondents answered negatively to the question "Do you have a working smoke alarm." For such rare events, it can be difficult to generate robust coefficients.  We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from each of these iterations.
 
 ```{r generate-model, warning=FALSE, fig.width=9, fig.height=7, message=FALSE}
@@ -321,7 +321,7 @@ assess_msas <- function(x) {
 
 msa_t <- assess_msas(d)
 # handle nulls
-msa_t <- msa_t[-(which(msa_t$smsa=="99990")),]
+msa_t <- msa_t[-(which(msa_t$smsa=="9999")),]
 ```
 
 A histogram of number of respondents per MSA.
@@ -363,8 +363,8 @@ Select MSAs with enough data.
 ```{r select-msas}
 MIN_MSA_OBS <- 60
 MIN_MSA_NEGATIVE_OBS <- 10
-TEST_MSA <- '73600'
-GOOD_MSAS <- msa_t$smsa[msa_t$n>= MIN_MSA_OBS & msa_t$n_negative >= MIN_MSA_NEGATIVE_OBS]
+TEST_MSA <- '7360'
+GOOD_MSAS <- as.character(msa_t$smsa[msa_t$n>= MIN_MSA_OBS & msa_t$n_negative >= MIN_MSA_NEGATIVE_OBS])
 write(GOOD_MSAS, 'data/msas.txt')
 cat('Selected', length(GOOD_MSAS), 'out of', nrow(msa_t), "MSAs")
 cat('Dropped', (1-round(length(GOOD_MSAS) / nrow(msa_t), 4)) * 100, '% of MSAs')
@@ -373,7 +373,7 @@ cat('Dropped', (1-round(length(GOOD_MSAS) / nrow(msa_t), 4)) * 100, '% of MSAs')
 ```{r estimate-msas, echo=F, warning=F, message=F} 
 
 # min max weights for msa model (based on aic)
-  MSA_WEIGHT_RANGE = c(0.25, 0.75)
+MSA_WEIGHT_RANGE = c(0.25, 0.75)
 
 # a function for computing risk coefficients 
 # for an individual msa
@@ -393,6 +393,7 @@ estimate_msa <- function(msa) {
 cat('Estimating MSA-level coefficients\n')
 msa_coefs <- ldply(GOOD_MSAS, estimate_msa)
 plot_coefs(msa_coefs[msa_coefs$smsa==TEST_MSA, ],  title=paste('Coefs and Std. Errors for MSA', TEST_MSA))
+
 # create model weight based on AIC
 msa_coefs$msa_weight <- normscore(msa_coefs$aic, to=MSA_WEIGHT_RANGE)
 msa_coefs$natl_weight <- 1 - msa_coefs$msa_weight
@@ -455,11 +456,8 @@ acs_bg <- acs[acs$sum_level == '15000', ]
 # keep the block group ids for later
 bg_geoid <- acs_bg$bg_geoid
 
-# join msas to blockgroups.
-j <- read.csv('data/msa_bg.csv', as.is=T)
-j <- j[!is.na(j$smsa),]
-j$bg_geoid <- as.character(j$bg_geoid)
-j$smsa <- as.character(j$smsa)
+# join 1980 smsas to 2010 blockgroups.
+j <- as.data.frame(fread('data/msa80_bg.csv', colClasses = c('character', 'character', 'character')))
 acs_bg <- merge(acs_bg, j, by='bg_geoid', all.x=T)
 ```
 
@@ -467,6 +465,7 @@ acs_bg <- merge(acs_bg, j, by='bg_geoid', all.x=T)
 
 # function for scoring a dataset 
 compute_score <- function(d, coefs, normalize=F) {
+  
   # get the intercept, terms, and estimates from the bootstrapped parameters
   i <- which(coefs$term=='intercept')
   intercept <- as.numeric(coefs$estimate[i])
@@ -491,7 +490,6 @@ compute_score <- function(d, coefs, normalize=F) {
   score <- rowSums(o)
   score <- score + intercept
   score <- 1/(1+exp(-score))
-
   # normalize
   if (normalize) {
     score <- normscore(score)
@@ -501,29 +499,90 @@ compute_score <- function(d, coefs, normalize=F) {
 
 # function for computing msa scores
 compute_msa_score <- function(msa) { 
-    d_m <- acs_bg[acs_bg$smsa==msa, ]
-    coefs_m <- msa_coefs[msa_coefs$smsa == msa, ]
-    d_m$msa_score  <-  compute_score(d_m, coefs_m, normalize=F) 
-    d_m$msa_weight <- min(coefs_m$msa_weight)
-    d_m$natl_weight <- min(coefs_m$natl_weight)
-    subset(d_m, select=c('bg_geoid', 'smsa', 'msa_score', 'msa_weight', 'natl_weight'))
+    d_m <- acs_bg[which(acs_bg$smsa==msa), ]
+    if (nrow(d_m) > 0) {
+      coefs_m <- msa_coefs[which(msa_coefs$smsa == msa), ]
+      d_m$msa_score  <-  compute_score(d_m, coefs_m, normalize=T) 
+      d_m$msa_weight <- min(coefs_m$msa_weight)
+      d_m$natl_weight <- min(coefs_m$natl_weight)
+      subset(d_m, select=c('bg_geoid', 'smsa', 'smsa_name', 'msa_score', 'msa_weight', 'natl_weight'))
+    }
 }
 
-# msa_scores <- ldply(msas, compute_msa_score)
+compute_msa_scores <- function() {
+  
+  # compute msa scores
+  o <- ldply(GOOD_MSAS, compute_msa_score)
+  
+  # normalize outliers
+  o$msa_score[msa_scores$msa_score >= max(MSA_WEIGHT_RANGE)] <- max(MSA_WEIGHT_RANGE)
+  o$msa_score <- normscore(msa_scores$msa_score)
+  o
+}
 
+merge_scores <- function(natl_score, msa_score) { 
+
+  output <- data.frame(natl_score=natl_score, bg_geoid=bg_geoid)
+
+  # merge msa + national scores
+  output <- merge(output, msa_scores, by='bg_geoid', all.x=T)
+
+  # deal with block groups outside of good smsas
+  output$msa_weight[is.na(output$msa_score)] <- 0 
+  output$natl_weight[is.na(output$msa_score)] <- 1
+  
+  # normalize msa score
+  output$msa_score <- normscore(output$msa_score)
+  output$msa_score[is.na(output$msa_score)] <- 0
+
+  # weight and merge msa + national scores and normalize to 0:1 scale.
+  output$smoke_alarm_risk <- normscore(
+      (output$natl_score * output$natl_weight) + 
+      (output$msa_score * output$msa_weight)
+  )
+  output
+}
 
 # compute national score
 natl_score <- compute_score(acs_bg, natl_coefs, normalize=T)
-output <- data.frame(smoke_alarm_risk=natl_score, bg_geoid=bg_geoid)
- 
+
+msa_scores <- compute_msa_scores()
+
+# distribution of MSA scores.
+ggplot(subset(msa_scores, msa_score>0.01), aes(x=msa_score)) + 
+  geom_histogram(color="white", fill=RED) + 
+  xlab('MSA-level risk scores') +
+  ylab('Count') + 
+  labs(title='Distribution of raw MSA-level risk scores.') + 
+  theme_enigma()
+
+# merge scores
+o <- merge_scores(natl_score, msa_scores)
+
 # plot a histogram of the computed scores
-ggplot(output, aes(x=natl_score)) + 
+ggplot(o, aes(x=smoke_alarm_risk)) + 
   geom_histogram(aes(y=..density..), color="white", fill=BLUE, binwidth=0.04) +
   geom_density(color=RED) + 
   theme_enigma() + 
   ylab('Density') + 
   xlab('Smoke Alarm Risk') + 
   labs(title='Smoke alarm risk for US Census Block Groups')
+
+# plot natl score vs msa score
+mrg_o <- subset(o, !is.na(smsa))
+
+ggplot(mrg_o, aes(x=natl_score, y=msa_score)) + 
+  geom_point(color='BLUE', alpha=0.03) + 
+  xlab('National-level score') + 
+  ylab('MSA-level score') + 
+  labs(title='National vs. MSA-level scores') +
+  theme_enigma() 
+
+# determine percentile breaks.
+probs <- c(0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+q <- quantile(output$smoke_alarm_risk, probs=probs)
+q_d <- data.frame(prob=probs, value=as.numeric(q))
+write.csv(q_d, 'data/smoke-alarm-risk-quintiles.csv', row.names=F)
 ```
 
 ## Formatting the output.

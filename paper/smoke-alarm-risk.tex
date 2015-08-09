@@ -269,7 +269,7 @@ f <- smoke ~
        hhrace_other +
        hhrace_black_only +
        hhrace_native_am_only +
-       hh_white_only+
+       hhrace_white_only +
        hhspan_yes +
        tenure_renter_occupied +
        hfuel_wood +
@@ -289,7 +289,7 @@ Only 4\% of respondents answered negatively to the question "Do you have a worki
 \end{figure}
 
 \subsubsection{MSA Models}
-We estimate MSA-level coefficients by training an identical model on each MSA in the AHS. To select an appropriate list of MSAs to model, we explored the total number of respondents and respondents without smoke alarms per MSA (Figures 4 & 5). We chose to eliminate  all MSAs which have less than 60 total respondents and less than 10 respondents without smoke alarms.  This resulted in a list of 46 MSAs out of a possible 147.
+We estimate MSA-level coefficients by training identical models for each MSA in the AHS. To select an appropriate list of MSAs to model, we explored the total number of respondents and respondents without smoke alarms per MSA (Figures 4 & 5). We chose to eliminate  all MSAs which have less than 60 total respondents and less than 10 respondents without smoke alarms.  This resulted in a list of 46 MSAs out of a possible 147.
 
 \begin{figure}
 \centering 
@@ -311,7 +311,7 @@ Since some remaining MSAs still lack sufficient data for generating reliable ris
 \caption{Total respondents per MSA by model AIC.}
 \end{figure}
 
-AIC's for each model are normalized to a scale of 0.25 to 0.75. We use this value to determine how much we should weight the MSA-level score when computing a block group's overall risk (Figure 7).
+AIC's for each model are normalized to a scale of 0.25 to 0.75 (Figure 7). We use this value to determine how much we should weight the MSA-level score when merging with a block group's national-level score.
 
 \begin{figure}
 \centering 
@@ -448,7 +448,7 @@ All of the tools outlined below are hosted on our site, which is designed to eng
 
 \subsection{Interactive Map}
 
-We designed a granular map for every geography we analyzed so that those involved in outreach can quickly assess the relative weights we have applied to their particular locality. The map depicts census block groups for each of the 46 MSAs for which our model applies, shaded to reflect relative likelihood that an area contains households that do not have a smoke alarm.
+We designed a granular map for every geography we analyzed so that those involved in outreach can quickly assess the risk scores for their particular locality. The map depicts census block groups for each of the 46 MSAs for which our model applies, shaded to reflect relative likelihood that an area contains households that do not have a smoke alarm.
 
 \subsection{Address/Score CSV}
 

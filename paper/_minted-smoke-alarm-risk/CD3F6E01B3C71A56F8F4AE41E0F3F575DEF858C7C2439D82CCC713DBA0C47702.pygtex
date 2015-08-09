@@ -34,7 +34,7 @@ f \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} smoke \PYGdefault{o}{\PYGdefa
        hhrace\PYGdefaultZus{}other \PYGdefault{o}{+}
        hhrace\PYGdefaultZus{}black\PYGdefaultZus{}only \PYGdefault{o}{+}
        hhrace\PYGdefaultZus{}native\PYGdefaultZus{}am\PYGdefaultZus{}only \PYGdefault{o}{+}
-       hh\PYGdefaultZus{}white\PYGdefaultZus{}only\PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}white\PYGdefaultZus{}only \PYGdefault{o}{+}
        hhspan\PYGdefaultZus{}yes \PYGdefault{o}{+}
        tenure\PYGdefaultZus{}renter\PYGdefaultZus{}occupied \PYGdefault{o}{+}
        hfuel\PYGdefaultZus{}wood \PYGdefault{o}{+}
