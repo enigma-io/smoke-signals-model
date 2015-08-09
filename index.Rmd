@@ -218,7 +218,7 @@ f <- smoke ~  built_1980_to_1989 + built_1960_to_1969 + built_2010_to_later +
               tenure_renter_occupied + 
               hfuel_wood + 
               hhrace_hawaiian_pac_isl_only + hhrace_asian_only + hhrace_other + 
-              hhrace_black_only + hhrace_native_am_only + hh_white_only +
+              hhrace_black_only + hhrace_native_am_only + hhrace_white_only +
               mg_yes
 
 # proc curve for insanity test.
@@ -273,8 +273,7 @@ estimate_natl_coefs_i <- function(i, chunk_size, per_negative) {
 
 estimate_natl_coefs <- function(n_iter, chunk_size, per_negative) { 
   raw <- ldply(1:n_iter, estimate_natl_coefs_i, 
-                          chunk_size=chunk_size, per_negative=per_negative ,
-                          .progress = 'text')
+                          chunk_size=chunk_size, per_negative=per_negative)
   # bootstrapped coefficients
   ddply(raw, 'term', summarize, 
                p_value = median(p_value), 
@@ -290,6 +289,7 @@ plot_coefs <- function(coefs, title) {
     coord_flip() + 
     geom_pointrange(aes(ymin = estimate - std_error, ymax = estimate + std_error),  color=RED) + 
     xlab('Variable') + 
+    ylim(-2,2) +
     ylab('Coefficient') +
     labs(title=title) + 
     theme_enigma() 
@@ -301,7 +301,7 @@ natl_coefs <- estimate_natl_coefs(
   chunk_size=1500, 
   per_negative=0.3)
 
-plot_coefs(natl_coefs, title='National-level Coefficients and Std. Errors')
+plot_coefs(natl_coefs, title='National-level coefs and std. errors')
 
 ```
 
@@ -366,14 +366,14 @@ MIN_MSA_NEGATIVE_OBS <- 10
 TEST_MSA <- '73600'
 GOOD_MSAS <- msa_t$smsa[msa_t$n>= MIN_MSA_OBS & msa_t$n_negative >= MIN_MSA_NEGATIVE_OBS]
 write(GOOD_MSAS, 'data/msas.txt')
-cat('Selected', length(msas), 'out of', nrow(msa_t), "MSAs")
-cat('Dropped', (1-round(length(msas) / nrow(msa_t), 4)) * 100, '% of MSAs')
+cat('Selected', length(GOOD_MSAS), 'out of', nrow(msa_t), "MSAs")
+cat('Dropped', (1-round(length(GOOD_MSAS) / nrow(msa_t), 4)) * 100, '% of MSAs')
 ```
 
 ```{r estimate-msas, echo=F, warning=F, message=F} 
 
 # min max weights for msa model (based on aic)
-MSA_WEIGHT_RANGE = c(0.25, 0.75)
+  MSA_WEIGHT_RANGE = c(0.25, 0.75)
 
 # a function for computing risk coefficients 
 # for an individual msa
@@ -391,8 +391,8 @@ estimate_msa <- function(msa) {
 }
 
 cat('Estimating MSA-level coefficients\n')
-msa_coefs <- ldply(msas, estimate_msa, .progress='text')
-
+msa_coefs <- ldply(GOOD_MSAS, estimate_msa)
+plot_coefs(msa_coefs[msa_coefs$smsa==TEST_MSA, ],  title=paste('Coefs and Std. Errors for MSA', TEST_MSA))
 # create model weight based on AIC
 msa_coefs$msa_weight <- normscore(msa_coefs$aic, to=MSA_WEIGHT_RANGE)
 msa_coefs$natl_weight <- 1 - msa_coefs$msa_weight
