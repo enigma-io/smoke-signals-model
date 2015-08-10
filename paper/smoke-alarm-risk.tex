@@ -115,7 +115,7 @@ Brian Abelson\\
 
 \maketitle
 \begin{abstract}
-This paper outlines a fully-realized civic tool that predicts municipal blocks least likely to have homes with functioning smoke alarms and most likely to have residents who are at highest risk for fire fatality. Using a novel merge of the American Community Survey (ACS) and the American Housing Survey (AHS), we are able to model these two risk factors at the geography of census block groups, and with the aid of the TIGER Census dataset, return actual street addresses with associated risk scores. This tool represents a potential model for developing reusable civic analytic applications that can serve multiple cities while responding to local particularities.
+This paper outlines a fully-realized civic tool that predicts municipal blocks most likely to have homes without functioning smoke alarms and most likely to have residents who are at-risk for fire fatalities. Using a novel merge of the American Community Survey (ACS) and the American Housing Survey (AHS), we are able to model these two risk factors at the geography of census block groups, and with the aid of the TIGER Census dataset, return actual street addresses with associated risk scores. This tool represents a potential model for developing reusable civic analytic applications that can serve multiple cities while responding to local particularities.
 \end{abstract}
 
 \keywords{Civic Analytics, Fire Prevention, Census, ACS, AHS, TIGER }
@@ -124,15 +124,15 @@ This paper outlines a fully-realized civic tool that predicts municipal blocks l
 \section{Intro}
 We can expect 20,000 people to be injured or killed by fires in the United States this year. With over 130 million housing units across the country, 4.5 million of them do not have smoke detectors, placing their inhabitants at substantial risk. Driving this number down is the single most important factor for saving lives put at risk by fire.
 
-A broad range of people are trying to address this problem, from local fire departments to the Red Cross. However, they all face the same problem: What door do we knock on first?
+A broad range of people are trying to address this problem, from local fire departments to the Red Cross. However, they all face the same problem: What doors do we knock on first?
 
 A community knows best which blocks and which citizens are at risk for injury or death in a fire. First responders and outreach organizations know the facts of their municipality better than a dataset ever can: firemen know their districts; Red Cross volunteers and religious organizations know their local residents. These are the instincts that up to now have been the primary, if not the only resources available to identify at-risk homes and residents. 
 
-With that in mind, we have gone farther than any previous effort to rank likelihood of smoke alarm risk by city block in the hopes that our work can offer more precise and granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking by city block for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas (MSAs). We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data via an API into our model.
+With that in mind, we have gone farther than any previous effort to rank likelihood of smoke alarm risk by city block in the hopes that our work can offer more precise and granular leads for those who perhaps had no such prior resources. What we are able to present is a systematic ranking by city block for 209 cities that fall within 40 census-tabulated Metropolitan Statistical Areas (MSAs). We have furthermore developed a tool that allows these same first responders and active community members to improve the accuracy of local scores by uploading fire data via an API into our algorithm.
 
 \section{Background}
 
-In November of 2014 there was a house fire in the Broadmoor neighborhood of New Orleans, killing five people, including three children. The house did not have a smoke alarm in it. Enigma began working with New Orleans' Fire Department and Office of Performance and Accountability to develop a model that identified New Orleans blocks least likely to have smoke alarms, and most likely to experience a fire fatality. This enabled the New Orleans Fire Department to conduct a door-to-door outreach campaign to place smoke alarms in as many at risk homes as possible. Drawing on the learnings from New Orleans, we extended the model to apply to the entire United States, in hopes that more people can use and improve on our insights.
+In November of 2014 there was a house fire in the Broadmoor neighborhood of New Orleans, killing five people, including three children. The house did not have a smoke alarm in it. Enigma began working with New Orleans' Fire Department and Office of Performance and Accountability to develop a model that identified New Orleans blocks least likely to have residents with working smoke alarms, and most likely to experience a fire fatality. This enabled the New Orleans Fire Department to conduct a door-to-door outreach campaign to place smoke alarms in as many at-risk homes as possible. Drawing on the learnings from New Orleans, we extended the model to apply to the entire United States, in hopes that more people can use and improve on our insights.
 
 
 \section{Components}
@@ -178,7 +178,7 @@ We came up with these mappings by scanning the AHS Codebook for questions that w
 
 \subsection{Risk Model}
 
-Armed with this novel dataset, we set about to develop a model to estimate the risk that residents of a particular census block group risk lack a smoke alarm.  An outline of our approach is as follows:
+Armed with this novel dataset, we set about to develop a model to estimate the risk that residents of a particular census block group risk lack smoke alarms.  An outline of our approach is as follows:
 
 \begin{enumerate} 
 \item Leverage exploratory analysis to select an appropriate sample from the AHS.
@@ -208,7 +208,7 @@ Out of the 186448 rows in the AHS, we were able to keep 155108 rows through this
 
 \subsubsection{Covariate Selection}
 
-Through a simple correlation analysis, we settled on number of variable groups to model in the AHS:
+Through a simple correlation analysis, we settled on a number of variable groups in the AHS to use as covariates in our model:
 
 \begin{itemize} 
 \item ``built'' - The year the household was built. 
@@ -280,7 +280,7 @@ f <- smoke ~
 
 First, we estimate national-level coefficients by training a logistic regression with the above formula on the entirety of our AHS sample.
 
-Only 4\% of respondents answered negatively to the question "Do you have a working smoke alarm?" For such rare events, it can be difficult to generate robust coefficients. We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from 1000 iterations (Figure 3). The national-level model suggests that  people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes.
+Only 4\% of respondents answered negatively to the question "Do you have a working smoke alarm?" For such rare events, it can be difficult to generate robust coefficients. We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from 1000 iterations (Figure 3). The national-level model suggests that people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes.
 
 \begin{figure}
 \centering 
@@ -341,7 +341,7 @@ We used the Census TIGER dataset in conjunction with the PostGIS TIGER geocoder 
 
 We first relied on the TIGER dataset to map our risk scores to specific geographical boundaries within the cities we analyzed. Each record in the ACS maps to a census block group, an area that can range in population from 600 to 3,000 citizens, and which is considered the smallest geographical entity deemed to still present valid sample data. This means that census block groups are highly variable in area. In a place like New York City, a census block group will consist of only a few blocks, whereas some areas of Alaska contain block groups that are thousands of square miles.
 
-As mentioned above in RISK MODEL, the results of AHS are normalized over Census-designated metropolitan statistical areas. Likewise, of the total 220,740 block groups in the U.S., we generated relevant scores for the NUMBER with a population density over RATIO that fell within one of the NUMBER MSAs we deemed data-rich enough to provide reliable scores.
+Of the total 220,740 block groups in the U.S., we generated relevant scores for those with a population density over RATIO that fell within one of the NUMBER MSAs we deemed data-rich enough to provide reliable scores.
 
 Finding the relevant block groups using these aforementioned tools is relatively trivial. For instance, to find block group ids that are in any given MSA, the query looks like:
 

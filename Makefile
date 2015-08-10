@@ -20,8 +20,10 @@ model:
 
 	Rscript -e 'knitr::knit2html("./index.Rmd")'
 
-cp_figures:
-	
+
+figures:
+
+	rm figure/*.png
 	cp figure/*.png paper/
 
 view: 
