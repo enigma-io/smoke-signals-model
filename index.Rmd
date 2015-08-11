@@ -25,7 +25,8 @@ registerDoMC()
 # knitr options
 knitr::opts_chunk$set(
   message=F, echo=F, 
-  warning=F, cache=T, echo=F,
+  warning=F, cache=T,
+  results='hide',
   fig.height=3,
   fig.width=5
 ) 
