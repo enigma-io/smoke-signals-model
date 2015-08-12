@@ -407,12 +407,12 @@ with right_side as (
     AND ST_Intersects(
         -- offset the street by a small margin
         ST_OffsetCurve(ST_LineMerge(right_side.the_geom), .00001),
-        tiger.bg.the_geom
+        block_group.the_geom
     )
-)
+),
 
 -- identical to right_side, with offset curve set negative
-with left_side as (
+left_side as (
     SELECT distinct
         block_group.bg_id as block_group_id,
         left_side.fullname as street_name,
@@ -427,13 +427,9 @@ with left_side as (
     AND ST_Intersects(
         -- offset the street by a small margin
         ST_OffsetCurve(ST_LineMerge(left_side.the_geom), -.00001),
-        tiger.bg.the_geom
+        block_group.the_geom
     )
 )
-
-SELECT * FROM left_side
-UNION ALL
-SELECT * FROM right_side
 \end{lstlisting}
 
 This query fails to return distinct results when streets are simultaneously extremely curvy and very close to each other. There are a low number occurrences of this anomaly out of 14,677,020 distinct listed street ranges, 99.51\% fall within a single block group, .49\% fall within two, and only 103 blocks fall within three. Clearly there is space here to refine our work, but for practical applications, the duplication of streets within block groups are not significant enough to truly hamper outreach work on the ground.
