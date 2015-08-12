@@ -23,7 +23,7 @@ model:
 
 figures:
 
-	rm figure/*.png
+	rm paper/*.png
 	cp figure/*.png paper/
 
 view: 

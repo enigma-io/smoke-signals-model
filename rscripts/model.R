@@ -103,7 +103,7 @@ rf_predict <- function(m, d, trace=0, impute=T) {
   # confustion matrix
   p <- as.factor(as.numeric(predictions) - 1)
   
-  if (!all(is.na(d$smoke))) {
+  if (!is.null(d$smoke) & !all(is.na(d$smoke))) {
     actual <- d$smoke
     conf_matrix <- table(actual, p, dnn=c('Actual', 'Predicted'))
     # error rates
