@@ -1,4 +1,4 @@
-% This is "sig-alternate.tex" V2.0 May 2012
+  % This is "sig-alternate.tex" V2.0 May 2012
 % This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
 %
 % This example file demonstrates the use of the 'sig-alternate.cls'
@@ -182,9 +182,9 @@ Armed with this novel dataset, we set about to develop a model to estimate the r
 
 \begin{enumerate} 
 \item Leverage exploratory analysis to select an appropriate sample from the AHS.
-\item Train a national-level logistic regression on the AHS.
-\item Train one logistic regression for each MSA in the AHS with an added model weighting function.
-\item Compute scores for the national and MSA-level models and merge based on MSA model weight.
+\item Train a national-level Random Forest on the AHS.
+\item Train one Random Forest for each MSA in the AHS with an added model weighting function.
+\item Compute scores for the national and MSA-level models and merge.
 \end{enumerate}
 
 \subsubsection{Handling Missing Data in the AHS}
@@ -204,7 +204,7 @@ The AHS does not require that subjects respond to all questions. As a result, th
 \item Randomly impute missing data by sampling from it's existing distribution.
 \end{enumerate}
 
-Out of the 186448 rows in the AHS, we were able to keep 155108 rows through this process, or 83.2\% of the total. 
+Out of the 186,448 rows in the AHS, we were able to keep 155,108 through this process, or 83.2\% of the total. 
 
 \subsubsection{Covariate Selection}
 
@@ -228,7 +228,7 @@ Through a simple correlation analysis, we settled on a number of variable groups
 \caption{Mean absolute correlations with "smoke" by variable group}
 \end{figure}
 
-These groups translated into the following model (written in R syntax):
+These groups translated into the following formula (written in R syntax):
 
 \begin{minted}[
 	frame=none,
@@ -278,18 +278,26 @@ f <- smoke ~
 
 \subsubsection{National Model}
 
-First, we estimate national-level coefficients by training a logistic regression with the above formula on the entirety of our AHS sample.
+First, we estimate a national Random Forest with the above formula on the entirety of our AHS sample.
 
-Only 4\% of respondents answered negatively to the question "Do you have a working smoke alarm?" For such rare events, it can be difficult to generate robust coefficients. We deal with this issue by bootstrapping the coefficients and artificially inflating the distribution of negative respondents for each iteration. Our final coefficients are the median of all the coefficients generated from 1000 iterations (Figure 3). The national-level model suggests that people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes.
+Only 4\% of respondents answered negatively to the question "Do you have a working smoke alarm?" For such rare events, it can be difficult to generate a classifier which is equally sensitive to negative and positive outcomes. If we simply guessed that every respondent lacked a smoke alarm, we would be correct in 96\% of cases. However, since our goal is to identify those at risk for not having a smoke alarm, we want to maximize our accuracy when predicting these rare events, even if it means a decrease in the overall accuracy of our model.  We deal with this issue by oversampling respondents without smoke alarms when training the Random Forest. The degree of oversampling is determined by training identical models with different weights, and plotting the error rates (Figure 3). 
 
 \begin{figure}
 \centering 
-\includegraphics[scale=0.36]{generate-model-2.png}
-\caption{Bootstrapped. National-level coefficients and std. errors.}
+\includegraphics[scale=0.36]{test-rf-1.png}
+\caption{Error rates by oversampling weight.}
+\end{figure}
+
+The national-level model suggests that, in general, race, poverty status, education level, and the date the householder moved in are strong predictors of a resident lacking a smoke alarm (Figure 4).  This model has an overall accuracy of 63\% and a true positive rate (the percentage of cases in which we accurately identify residents without smoke alarms) of 59\%.
+
+\begin{figure}
+\centering 
+\includegraphics[scale=0.36]{var-importance-1.png}
+\caption{Variable importance for national-level Random Forest.}
 \end{figure}
 
 \subsubsection{MSA Models}
-We estimate MSA-level coefficients by training identical models for each MSA in the AHS. To select an appropriate list of MSAs to model, we explored the total number of respondents and respondents without smoke alarms per MSA (Figures 4 & 5). We chose to eliminate  all MSAs which have less than 60 total respondents and less than 10 respondents without smoke alarms.  This resulted in a list of 46 MSAs out of a possible 147.
+We estimate MSA-level effects by training identical models for each MSA represented in the AHS. To select an appropriate list of MSAs to model, we explored the total number of respondents and respondents without smoke alarms per MSA (Figures 5 \& 6). We chose to eliminate  all MSAs which have less than 2000 total respondents.  This resulted in a list of 29 MSAs out of a possible 147.
 
 \begin{figure}
 \centering 
@@ -303,33 +311,41 @@ We estimate MSA-level coefficients by training identical models for each MSA in 
 \caption{Total respondents per MSA by percent without smoke alarms.}
 \end{figure}
 
-Since some remaining MSAs still lack sufficient data for generating reliable risk estimates, we compute a weighting factor for each MSA-level model using it's Akaike information criterion (AIC). This metric is largely a function of the sample size, but contains additional information about the model's relative strength (Figure 6).
+We also adjust the oversampling weight for each MSA-level model by the percentage of respondents without smoke alarms. Initial tests demonstrated that this metric was highly correlated with the false positive rate (Figure 7). This process effectively normalizes the overall error rate of MSA-level models regardless of sample size (Figure 8).  On average, the MSA models have an overall accuracy of 61\% and a true positive rate of 55\%. 
 
 \begin{figure}
 \centering 
-\includegraphics[scale=0.42]{estimate-msas-compare-aic-1.png}
-\caption{Total respondents per MSA by model AIC.}
+\includegraphics[scale=0.42]{rf-msas-metrics-1.png}
+\caption{False positives by respondents without smoke alarms per MSA.}
 \end{figure}
 
-AIC's for each model are normalized to a scale of 0.25 to 0.75 (Figure 7). We use this value to determine how much we should weight the MSA-level score when merging with a block group's national-level score.
-
 \begin{figure}
 \centering 
-\includegraphics[scale=0.42]{estimate-msas-compare-aic-weight-1.png}
-\caption{Distribution of computed MSA model weight.}}
+\includegraphics[scale=0.42]{rf-msas-metrics-3.png}
+\caption{Overall error by total respondents per MSA.}
 \end{figure}
 
 \subsubsection{Computing Risk Scores}
 
-Overall risk scores are computed by applying the coefficients trained on the AHS to census block group-level data in the ACS. In the case a block group falls within our list of selected MSAs, we combine it's national score with it's MSA-specific score based on the MSA model's  computed weight. We then normalize this score to a scale of 0 to 1 for purposes of interpretability.
+Risk scores are computed by applying the models trained on the AHS to census block group-level data from the ACS. These scores represent the probability that residents in a given block group lack smoke alarms. In the case a block group falls within our list of selected MSAs, we average it's national score with it's MSA-specific score. In this manner, we aim to capture national and local-level variations in the factors associated with smoke alarm risk (Figures 9 \& 10). A more sophisticated approach might employ a single multilevel model rather than an ensemble of a national and MSA-level model. Interestingly, there did not appear to be a strong relationship between national and MSA-level risk scores (Figure 11).  Without a present means of verifying the validity of these scores, we cannot be certain whether this is product of the model's relatively high error rate, local variations, or some combination thereof.
 
-(Figure 8)
 \begin{figure}
 \centering 
-\includegraphics[scale=0.42]{compute-risk-scores-1.png}
+\includegraphics[scale=0.42]{score-metrics-1.png}
 \caption{Distribution of overall risk score per census block group.}}
 \end{figure}
 
+\begin{figure}
+\centering 
+\includegraphics[scale=0.42]{score-metrics-2.png}
+\caption{Distribution of MSA-level risk score per census block group.}}
+\end{figure}
+
+\begin{figure}
+\centering 
+\includegraphics[scale=0.42]{score-metrics-3.png}
+\caption{Relationship of national and MSA-level scores.}}
+\end{figure}
 
 \subsection{TIGER Geocoder}
 
@@ -341,7 +357,7 @@ We used the Census TIGER dataset in conjunction with the PostGIS TIGER geocoder 
 
 We first relied on the TIGER dataset to map our risk scores to specific geographical boundaries within the cities we analyzed. Each record in the ACS maps to a census block group, an area that can range in population from 600 to 3,000 citizens, and which is considered the smallest geographical entity deemed to still present valid sample data. This means that census block groups are highly variable in area. In a place like New York City, a census block group will consist of only a few blocks, whereas some areas of Alaska contain block groups that are thousands of square miles.
 
-Of the total 220,740 block groups in the U.S., we generated relevant scores for those with a population density over RATIO that fell within one of the NUMBER MSAs we deemed data-rich enough to provide reliable scores.
+Of the total 220,740 block groups in the U.S., we generated relevant scores for those with a population density over RATIO that fell within one of the 29 we deemed data-rich enough to provide reliable scores.
 
 Finding the relevant block groups using these aforementioned tools is relatively trivial. For instance, to find block group ids that are in any given MSA, the query looks like:
 

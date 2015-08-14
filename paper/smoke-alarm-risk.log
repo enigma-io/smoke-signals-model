@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 AUG 2015 14:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  14 AUG 2015 12:36
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -578,153 +578,160 @@ Underfull \hbox (badness 10000) in paragraph at lines 146--146
 
 
 (./_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230CC0FA479B990C6F6C46
-73513D42342EE.pygtex) <missing-data-1.png, id=13, 650.43pt x 505.89pt>
+73513D42342EE.pygtex) <missing-data-1.png, id=13, 505.89pt x 505.89pt>
 File: missing-data-1.png Graphic file (type png)
 
 <use missing-data-1.png>
 Package pdftex.def Info: missing-data-1.png used on input line 196.
-(pdftex.def)             Requested size: 273.17873pt x 212.47234pt.
-
-Overfull \hbox (33.17873pt too wide) in paragraph at lines 196--197
- [][] 
- []
-
-[2 <./missing-data-1.png>]
-<explore-correlations-1-2.png, id=24, 650.43pt x 505.89pt>
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
+ [2 <./missing-data-1.png>]
+<explore-correlations-1-2.png, id=24, 505.89pt x 505.89pt>
 File: explore-correlations-1-2.png Graphic file (type png)
 
 <use explore-correlations-1-2.png>
 Package pdftex.def Info: explore-correlations-1-2.png used on input line 227.
-(pdftex.def)             Requested size: 273.17873pt x 212.47234pt.
-
-Overfull \hbox (33.17873pt too wide) in paragraph at lines 227--228
- [][] 
- []
-
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 \openout3 = `smoke-alarm-risk.pyg'.
 
 
 (./_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF858C7C2439D82CCC
-713DBA0C47702.pygtex) <generate-model-2.png, id=25, 650.43pt x 505.89pt>
-File: generate-model-2.png Graphic file (type png)
+713DBA0C47702.pygtex) <test-rf-1.png, id=25, 505.89pt x 505.89pt>
+File: test-rf-1.png Graphic file (type png)
 
-<use generate-model-2.png>
-Package pdftex.def Info: generate-model-2.png used on input line 287.
-(pdftex.def)             Requested size: 234.15462pt x 182.12025pt.
+<use test-rf-1.png>
+Package pdftex.def Info: test-rf-1.png used on input line 287.
+(pdftex.def)             Requested size: 182.12025pt x 182.12025pt.
+ [3 <./explore-correlations-1-2.png> <./test-rf-1.png>]
+<var-importance-1.png, id=32, 641.39626pt x 497.86pt>
+File: var-importance-1.png Graphic file (type png)
 
-./smoke-alarm-risk.tex:292: Misplaced alignment tab character &.
-l.292 ...without smoke alarms per MSA (Figures 4 &
-                                                   5). We chose to eliminate...
+<use var-importance-1.png>
+Package pdftex.def Info: var-importance-1.png used on input line 295.
+(pdftex.def)             Requested size: 230.90247pt x 179.22946pt.
 
-? 
-[3 <./explore-correlations-1-2.png> <./generate-model-2.png>]
-<compute-msa-stats-histogram-1.png, id=32, 505.89pt x 505.89pt>
+<compute-msa-stats-histogram-1.png, id=33, 505.89pt x 505.89pt>
 File: compute-msa-stats-histogram-1.png Graphic file (type png)
 
 <use compute-msa-stats-histogram-1.png>
-Package pdftex.def Info: compute-msa-stats-histogram-1.png used on input line 2
-96.
+Package pdftex.def Info: compute-msa-stats-histogram-1.png used on input line 3
+04.
 (pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 
-<compute-msa-stats-scatter-1.png, id=33, 505.89pt x 505.89pt>
+<compute-msa-stats-scatter-1.png, id=34, 505.89pt x 505.89pt>
 File: compute-msa-stats-scatter-1.png Graphic file (type png)
 
 <use compute-msa-stats-scatter-1.png>
-Package pdftex.def Info: compute-msa-stats-scatter-1.png used on input line 302
+Package pdftex.def Info: compute-msa-stats-scatter-1.png used on input line 310
 .
 (pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 
-<estimate-msas-compare-aic-1.png, id=34, 505.89pt x 505.89pt>
-File: estimate-msas-compare-aic-1.png Graphic file (type png)
+Overfull \hbox (2.52724pt too wide) in paragraph at lines 314--315
+\T1/aer/m/n/9 alarms. Ini-tial tests demon-strated that this met-ric was highly
 
-<use estimate-msas-compare-aic-1.png>
-Package pdftex.def Info: estimate-msas-compare-aic-1.png used on input line 310
-.
-(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
-
-<estimate-msas-compare-aic-weight-1.png, id=35, 505.89pt x 505.89pt>
-File: estimate-msas-compare-aic-weight-1.png Graphic file (type png)
-
-<use estimate-msas-compare-aic-weight-1.png>
-Package pdftex.def Info: estimate-msas-compare-aic-weight-1.png used on input l
-ine 318.
-(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
-
-./smoke-alarm-risk.tex:320: Extra }, or forgotten \endgroup.
-\@endfloatbox ...pagefalse \outer@nobreak \egroup 
-                                                  \color@endbox 
-l.320 \end{figure}
-                  
-? 
-<compute-risk-scores-1.png, id=36, 650.43pt x 505.89pt>
-File: compute-risk-scores-1.png Graphic file (type png)
-
-<use compute-risk-scores-1.png>
-Package pdftex.def Info: compute-risk-scores-1.png used on input line 329.
-(pdftex.def)             Requested size: 273.17873pt x 212.47234pt.
-
-Overfull \hbox (33.17873pt too wide) in paragraph at lines 329--330
- [][] 
  []
 
-./smoke-alarm-risk.tex:331: Extra }, or forgotten \endgroup.
+<rf-msas-metrics-1.png, id=35, 505.89pt x 505.89pt>
+File: rf-msas-metrics-1.png Graphic file (type png)
+
+<use rf-msas-metrics-1.png>
+Package pdftex.def Info: rf-msas-metrics-1.png used on input line 318.
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
+
+<rf-msas-metrics-3.png, id=36, 505.89pt x 505.89pt>
+File: rf-msas-metrics-3.png Graphic file (type png)
+
+<use rf-msas-metrics-3.png>
+Package pdftex.def Info: rf-msas-metrics-3.png used on input line 324.
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
+
+<score-metrics-1.png, id=37, 412.54124pt x 359.3425pt>
+File: score-metrics-1.png Graphic file (type png)
+
+<use score-metrics-1.png>
+Package pdftex.def Info: score-metrics-1.png used on input line 334.
+(pdftex.def)             Requested size: 173.26614pt x 150.9228pt.
+
+./smoke-alarm-risk.tex:336: Extra }, or forgotten \endgroup.
 \@endfloatbox ...pagefalse \outer@nobreak \egroup 
                                                   \color@endbox 
-l.331 \end{figure}
+l.336 \end{figure}
+                  
+? 
+<score-metrics-2.png, id=38, 440.64626pt x 374.39874pt>
+File: score-metrics-2.png Graphic file (type png)
+
+<use score-metrics-2.png>
+Package pdftex.def Info: score-metrics-2.png used on input line 340.
+(pdftex.def)             Requested size: 185.07016pt x 157.2464pt.
+
+./smoke-alarm-risk.tex:342: Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.342 \end{figure}
+                  
+? 
+<score-metrics-3.png, id=39, 505.89pt x 505.89pt>
+File: score-metrics-3.png Graphic file (type png)
+ <use score-metrics-3.png>
+Package pdftex.def Info: score-metrics-3.png used on input line 346.
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
+
+./smoke-alarm-risk.tex:348: Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.348 \end{figure}
                   
 ? 
 
-Overfull \hbox (7.38693pt too wide) in paragraph at lines 336--337
+Overfull \hbox (7.38693pt too wide) in paragraph at lines 352--353
 \T1/aer/m/n/9 gran-u-lar dataset of ge-o-graph-i-cal fea-tures for the United S
 tates.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 338--338
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 [][]\T1/aer/m/n/9 https://github.com/enigma-io/ansible-tiger-geocoder-
  []
 
-[4 <./compute-msa-stats-histogram-1.png> <./compute-msa-stats-scatter-1.png> <.
-/estimate-msas-compare-aic-1.png>]
+[4 <./var-importance-1.png> <./compute-msa-stats-histogram-1.png> <./compute-ms
+a-stats-scatter-1.png>] [5 <./rf-msas-metrics-1.png> <./rf-msas-metrics-3.png> 
+<./score-metrics-1.png> <./score-metrics-2.png> <./score-metrics-3.png>]
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
 
 LaTeX Font Warning: Font shape `T1/aett/bx/n' undefined
-(Font)              using `T1/aett/m/n' instead on input line 357.
+(Font)              using `T1/aett/m/n' instead on input line 373.
 
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 366
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 382
 .
-LaTeX Font Info:    No file TS1aett.fd. on input line 366.
+LaTeX Font Info:    No file TS1aett.fd. on input line 382.
 
 LaTeX Font Warning: Font shape `TS1/aett/m/n' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textquotesingle' on input line 366.
+(Font)              for symbol `textquotesingle' on input line 382.
 
-[5 <./estimate-msas-compare-aic-weight-1.png> <./compute-risk-scores-1.png>]
 [6]
-Overfull \hbox (15.59483pt too wide) in paragraph at lines 477--478
+Overfull \hbox (15.59483pt too wide) in paragraph at lines 489--490
 \T1/aer/m/n/9 ment out-reach co-or-di-na-tors can com-bine their in-ter-nal dat
 abases
  []
 
 runsystem(rm "smoke-alarm-risk.pyg")...executed.
 
-[7
-
-] (./smoke-alarm-risk.aux)
+[7] (./smoke-alarm-risk.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 7479 strings out of 493089
- 112625 string characters out of 6134842
- 387916 words of memory out of 5000000
- 10783 multiletter control sequences out of 15000+600000
+ 7494 strings out of 493089
+ 112772 string characters out of 6134842
+ 334404 words of memory out of 5000000
+ 10795 multiletter control sequences out of 15000+600000
  54470 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,42p,827b,1444s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,42p,947b,1444s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texl
@@ -742,10 +749,10 @@ type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/u
 rw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/u
 tmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
 >
-Output written on smoke-alarm-risk.pdf (7 pages, 385637 bytes).
+Output written on smoke-alarm-risk.pdf (7 pages, 607076 bytes).
 PDF statistics:
- 107 PDF objects out of 1000 (max. 8388607)
+ 113 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 56 words of extra memory for PDF output out of 10000 (max. 10000000)
 

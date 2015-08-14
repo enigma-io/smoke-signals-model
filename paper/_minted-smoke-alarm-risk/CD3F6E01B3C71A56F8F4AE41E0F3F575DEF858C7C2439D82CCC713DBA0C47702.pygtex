@@ -1,0 +1,42 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c+c1}{\PYGdefaultZsh{} our model\PYGdefaultZsq{}s formula}
+f \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} smoke \PYGdefault{o}{\PYGdefaultZti{}}
+       built\PYGdefaultZus{}1980\PYGdefaultZus{}to\PYGdefaultZus{}1989 \PYGdefault{o}{+}
+       built\PYGdefaultZus{}1960\PYGdefaultZus{}to\PYGdefaultZus{}1969 \PYGdefault{o}{+}
+       built\PYGdefaultZus{}2010\PYGdefaultZus{}to\PYGdefaultZus{}later \PYGdefault{o}{+}
+       built\PYGdefaultZus{}1990\PYGdefaultZus{}to\PYGdefaultZus{}1999 \PYGdefault{o}{+}
+       built\PYGdefaultZus{}1950\PYGdefaultZus{}to\PYGdefaultZus{}1959 \PYGdefault{o}{+}
+       built\PYGdefaultZus{}1939\PYGdefaultZus{}or\PYGdefaultZus{}earlier \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}50\PYGdefaultZus{}to\PYGdefaultZus{}99 \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}under\PYGdefaultZus{}50  \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}184\PYGdefaultZus{}to\PYGdefaultZus{}199 \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}125\PYGdefaultZus{}to\PYGdefaultZus{}149 \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}100\PYGdefaultZus{}to\PYGdefaultZus{}124 \PYGdefault{o}{+}
+       poor\PYGdefaultZus{}150\PYGdefaultZus{}to\PYGdefaultZus{}184 \PYGdefault{o}{+}
+       hhmove\PYGdefaultZus{}moved\PYGdefaultZus{}in\PYGdefaultZus{}1990\PYGdefaultZus{}to\PYGdefaultZus{}1999 \PYGdefault{o}{+}
+       hhmove\PYGdefaultZus{}moved\PYGdefaultZus{}in\PYGdefaultZus{}1969\PYGdefaultZus{}or\PYGdefaultZus{}earlier \PYGdefault{o}{+}
+       hhmove\PYGdefaultZus{}moved\PYGdefaultZus{}in\PYGdefaultZus{}2000\PYGdefaultZus{}to\PYGdefaultZus{}2009 \PYGdefault{o}{+}
+       hhmove\PYGdefaultZus{}moved\PYGdefaultZus{}in\PYGdefaultZus{}1970\PYGdefaultZus{}to\PYGdefaultZus{}1979 \PYGdefault{o}{+}
+       hhmove\PYGdefaultZus{}moved\PYGdefaultZus{}in\PYGdefaultZus{}1980\PYGdefaultZus{}to\PYGdefaultZus{}1989 \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}associates\PYGdefaultZus{}degree \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}7th\PYGdefaultZus{}or\PYGdefaultZus{}8th\PYGdefaultZus{}grade \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}9th\PYGdefaultZus{}grade \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}doctorate\PYGdefaultZus{}degree \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}5th\PYGdefaultZus{}or\PYGdefaultZus{}6th\PYGdefaultZus{}grade \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}regular\PYGdefaultZus{}high\PYGdefaultZus{}school\PYGdefaultZus{}grad \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}bachelors\PYGdefaultZus{}degree \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}1st\PYGdefaultZus{}2nd\PYGdefaultZus{}3rd\PYGdefaultZus{}4th\PYGdefaultZus{}grade \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}11th\PYGdefaultZus{}grade \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}less\PYGdefaultZus{}than\PYGdefaultZus{}1st\PYGdefaultZus{}grade  \PYGdefault{o}{+}
+       hhgrad\PYGdefaultZus{}12th\PYGdefaultZus{}grade\PYGdefaultZus{}no\PYGdefaultZus{}diploma \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}hawaiian\PYGdefaultZus{}pac\PYGdefaultZus{}isl\PYGdefaultZus{}only \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}asian\PYGdefaultZus{}only \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}other \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}black\PYGdefaultZus{}only \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}native\PYGdefaultZus{}am\PYGdefaultZus{}only \PYGdefault{o}{+}
+       hhrace\PYGdefaultZus{}white\PYGdefaultZus{}only \PYGdefault{o}{+}
+       hhspan\PYGdefaultZus{}yes \PYGdefault{o}{+}
+       tenure\PYGdefaultZus{}renter\PYGdefaultZus{}occupied \PYGdefault{o}{+}
+       hfuel\PYGdefaultZus{}wood \PYGdefault{o}{+}
+       mg\PYGdefaultZus{}yes
+\end{Verbatim}
