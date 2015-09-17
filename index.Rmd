@@ -132,44 +132,6 @@ ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
   theme_enigma()
 ```
 
-## Correlations With "battery"
-
-When we were first exploring the AHS, we thought we might be able to conflate two variables as our dependent variable: 
-
-- `smoke`: Do you have a working smoke detector?
-- `battery`: Have you changed your smoke detector's batteries in the past 6 months?
-
-Our reasoning here was that some respondents might now know if they had a working smoke detector or, if they did, would be unwilling to admit so.
-However, when we dug into the data, we we're surprised to find that these two variables were associated with very different populations.
-
-While people who didn't have smoke alarms tended to be uneducated, hispanic, not have mortgages, and live in older homes, people who hadn't changed their batteries in the past 6 months tended to be highly educated, have mortgages, and live in newer construction buildings.
-
-```{r, explore-correlations-2, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
-cor_d <- ldply(vars, calc_correlation_with_y, 'battery')
-cor_d <- cor_d[order(cor_d$cor, decreasing=T), ]
-
-ggplot(head(cor_d, 25), aes(x=reorder(var, cor), y=cor, label=cor)) +
-  geom_bar(stat='identity', color=BLUE, fill=BLUE) +
-  geom_text(size=4) +
-  coord_flip() + 
-  xlab('Variable') + 
-  ylab('Correlation with "battery"') +
-  labs(title='Top 25 correlatied variables with "battery"') + 
-  theme_enigma()
-
-group_cor_d <- ldply(triple_groups, calc_corrlation_per_group_with_y, 'battery', T)
-group_cor_d <- group_cor_d[!is.na(group_cor_d$cor), ]
-
-ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
-  geom_bar(stat='identity', color=BLUE, fill=BLUE) +
-  geom_text(size=4) +
-  coord_flip() + 
-  xlab('Variable group') + 
-  ylab('Correlation with "battery') +
-  labs(title='Mean absolute correlations with "battery" by variable group') + 
-  theme_enigma()
-```
-
 ## Variable Selection
 
 ```{r variable-selection, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
