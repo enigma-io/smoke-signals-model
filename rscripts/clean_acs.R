@@ -24,7 +24,7 @@ acs$sum_level <- as.character(unlist(llply(acs$geoid, parse_sum_level)))
 acs_bg <- acs[acs$sum_level == '15000', ]
 
 # join 1980 smsas to 2010 blockgroups.
-j <- as.data.frame(fread('data/msa80_bg.csv', colClasses = c('character', 'character', 'character')))
+j <- as.data.frame(fread('data/msa80-bg.csv', colClasses = c('character', 'character', 'character')))
 acs_bg <- merge(acs_bg, j, by='bg_geoid', all.x=T)
 rm(acs, j)
     

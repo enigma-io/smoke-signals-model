@@ -516,32 +516,6 @@ ggplot(output, aes(x=natl_score, y=msa_score)) +
   ylab('MSA-level score') + 
   labs(title='National vs. MSA-level scores') +
   theme_enigma() 
-
-pop_density <- as.data.frame(
-  fread('data/acs-bg-pop-density.csv', colClasses = c('character', 'numeric'))
-)
-
-# distribution of population density per census block group.
-options(scipen = 10)
-ggplot(pop_density, aes(x=pop_density)) + 
-  geom_histogram(color="white", fill=BLUE, binwidth=0.00005) +
-  xlab('People per square meter.') +
-  ylab('Block groups') + 
-  xlim(0, 0.001) + 
-  labs(title='Population density per census block group.') + 
-  theme_enigma()
-
-# save percentile breaks for census-block group population density.
-probs <- c(0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
-q <- quantile(pop_density$pop_density, probs=probs, na.rm=T)
-q_d <- data.frame(prob=probs, value=as.numeric(q))
-write.csv(q_d, 'data/pop-density-quintiles.csv', row.names=F)
-
-# save percentile breaks for smoke alarm risk.
-probs <- c(0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
-q <- quantile(output$smoke_alarm_risk, probs=probs)
-q_d <- data.frame(prob=probs, value=as.numeric(q))
-write.csv(q_d, 'data/smoke-alarm-risk-quintiles.csv', row.names=F)
 ```
 
 ## Formatting the output.
