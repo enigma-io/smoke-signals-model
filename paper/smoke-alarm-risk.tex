@@ -357,7 +357,7 @@ We used the Census TIGER dataset in conjunction with the PostGIS TIGER geocoder 
 
 We first relied on the TIGER dataset to map our risk scores to specific geographical boundaries within the cities we analyzed. Each record in the ACS maps to a census block group, an area that can range in population from 600 to 3,000 citizens, and which is considered the smallest geographical entity deemed to still present valid sample data. This means that census block groups are highly variable in area. In a place like New York City, a census block group will consist of only a few blocks, whereas some areas of Alaska contain block groups that are thousands of square miles.
 
-Of the total 220,740 block groups in the U.S., we generated relevant scores for those with a population density over RATIO that fell within one of the 29 we deemed data-rich enough to provide reliable scores.
+Of the total 220,740 block groups in the U.S., we generated relevant scores for those in the top 80\% with regards to population density.
 
 Finding the relevant block groups using these aforementioned tools is relatively trivial. For instance, to find block group ids that are in any given MSA, the query looks like:
 

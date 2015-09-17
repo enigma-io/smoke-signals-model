@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 16:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 17:18
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -336,9 +336,6 @@ runsystem(which "pygmentize" && touch "smoke-alarm-risk.aex")...executed.
 
 runsystem(rm "smoke-alarm-risk.aex")...executed.
 
-runsystem(pygmentize -S default -f latex -P commandprefix=PYGdefault > "_minted
--smoke-alarm-risk/default.pygstyle")...executed.
-
 
 (./_minted-smoke-alarm-risk/default.pygstyle)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
@@ -579,10 +576,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 146--146
 ]
 \openout3 = `smoke-alarm-risk.pyg'.
 
-runsystem(pygmentize -l yaml -f latex -F tokenmerge -P style=default -P command
-prefix=PYGdefault -o "_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230
-CC0FA479B990C6F6C4673513D42342EE.pygtex" "smoke-alarm-risk.pyg" )...executed.
-
 
 (./_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230CC0FA479B990C6F6C46
 73513D42342EE.pygtex) <missing-data-1.png, id=13, 505.89pt x 505.89pt>
@@ -599,10 +592,6 @@ File: explore-correlations-1-2.png Graphic file (type png)
 Package pdftex.def Info: explore-correlations-1-2.png used on input line 227.
 (pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 \openout3 = `smoke-alarm-risk.pyg'.
-
-runsystem(pygmentize -l r -f latex -F tokenmerge -P style=default -P commandpre
-fix=PYGdefault -o "_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF
-858C7C2439D82CCC713DBA0C47702.pygtex" "smoke-alarm-risk.pyg" )...executed.
 
 
 (./_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF858C7C2439D82CCC
@@ -735,11 +724,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Here is how much of TeX's memory you used:
  7494 strings out of 493089
  112772 string characters out of 6134842
- 305651 words of memory out of 5000000
+ 307576 words of memory out of 5000000
  10795 multiletter control sequences out of 15000+600000
  54470 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,42p,946b,1619s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,42p,946b,1505s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texl
@@ -757,7 +746,7 @@ type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/u
 rw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/u
 tmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
 >
-Output written on smoke-alarm-risk.pdf (7 pages, 615911 bytes).
+Output written on smoke-alarm-risk.pdf (7 pages, 615816 bytes).
 PDF statistics:
  113 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream
