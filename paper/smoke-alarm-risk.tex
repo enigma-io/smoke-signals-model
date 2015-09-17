@@ -183,8 +183,8 @@ Armed with this novel dataset, we set about to develop a model to estimate the r
 \begin{enumerate} 
 \item Leverage exploratory analysis to select an appropriate sample from the AHS.
 \item Train a national-level Random Forest on the AHS.
-\item Train one Random Forest for each MSA in the AHS with an added model weighting function.
-\item Compute scores for the national and MSA-level models and merge.
+\item Train one Random Forest for each MSA in the AHS with an added model-weighting function.
+\item Score block groups in the ACS with the national and MSA-level models and merge.
 \end{enumerate}
 
 \subsubsection{Handling Missing Data in the AHS}
@@ -194,7 +194,7 @@ The AHS does not require that subjects respond to all questions. As a result, th
 \begin{figure}
 \centering 
 \includegraphics[scale=0.42]{missing-data-1.png}
-\caption{Missing data in the AHS by variable group}
+\caption{Missing data in the AHS by variable group} 
 \end{figure}
 
 \begin{enumerate} 
@@ -458,9 +458,9 @@ This query fails to return distinct results when streets are simultaneously extr
 
 The primary purpose of this project was not analysis and research, but rather a suite of open-sourced tools that make decision-making easier for fire departments and organizations involved in fire risk mitigation. Here we outline the primary output of our efforts to date.
 
-\subsection{Smoke Risk Portal}
+\subsection{Smoke Signals}
 
-All of the tools outlined below are hosted on our site, which is designed to engage directly with those who are most likely to use them. 
+All of the tools outlined below are hosted on our site\footnote{http://labs.enigma.io/smoke-signals}, which is designed to engage directly with those who are most likely to use them. 
 
 \subsection{Interactive Map}
 

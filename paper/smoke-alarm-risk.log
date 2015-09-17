@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 15:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 16:22
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -602,12 +602,11 @@ File: test-rf-1.png Graphic file (type png)
 Package pdftex.def Info: test-rf-1.png used on input line 287.
 (pdftex.def)             Requested size: 182.12025pt x 182.12025pt.
  [3 <./explore-correlations-1-2.png> <./test-rf-1.png>]
-<var-importance-1.png, id=32, 641.39626pt x 497.86pt>
+<var-importance-1.png, id=32, 505.89pt x 505.89pt>
 File: var-importance-1.png Graphic file (type png)
-
-<use var-importance-1.png>
+ <use var-importance-1.png>
 Package pdftex.def Info: var-importance-1.png used on input line 295.
-(pdftex.def)             Requested size: 230.90247pt x 179.22946pt.
+(pdftex.def)             Requested size: 182.12025pt x 182.12025pt.
 
 <compute-msa-stats-histogram-1.png, id=33, 505.89pt x 505.89pt>
 File: compute-msa-stats-histogram-1.png Graphic file (type png)
@@ -643,13 +642,12 @@ File: rf-msas-metrics-3.png Graphic file (type png)
 <use rf-msas-metrics-3.png>
 Package pdftex.def Info: rf-msas-metrics-3.png used on input line 324.
 (pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
-
-<score-metrics-1.png, id=37, 412.54124pt x 359.3425pt>
+ <score-metrics-1.png, id=37, 505.89pt x 505.89pt>
 File: score-metrics-1.png Graphic file (type png)
 
 <use score-metrics-1.png>
 Package pdftex.def Info: score-metrics-1.png used on input line 334.
-(pdftex.def)             Requested size: 173.26614pt x 150.9228pt.
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 
 ./smoke-alarm-risk.tex:336: Extra }, or forgotten \endgroup.
 \@endfloatbox ...pagefalse \outer@nobreak \egroup 
@@ -657,12 +655,11 @@ Package pdftex.def Info: score-metrics-1.png used on input line 334.
 l.336 \end{figure}
                   
 ? 
-<score-metrics-2.png, id=38, 440.64626pt x 374.39874pt>
+<score-metrics-2.png, id=38, 505.89pt x 505.89pt>
 File: score-metrics-2.png Graphic file (type png)
-
-<use score-metrics-2.png>
+ <use score-metrics-2.png>
 Package pdftex.def Info: score-metrics-2.png used on input line 340.
-(pdftex.def)             Requested size: 185.07016pt x 157.2464pt.
+(pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 
 ./smoke-alarm-risk.tex:342: Extra }, or forgotten \endgroup.
 \@endfloatbox ...pagefalse \outer@nobreak \egroup 
@@ -695,7 +692,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 354--354
 
 [4 <./var-importance-1.png> <./compute-msa-stats-histogram-1.png> <./compute-ms
 a-stats-scatter-1.png>] [5 <./rf-msas-metrics-1.png> <./rf-msas-metrics-3.png> 
-<./score-metrics-1.png> <./score-metrics-2.png> <./score-metrics-3.png>]
+<./score-metrics-1.png> <./score-metrics-2.png>]
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
@@ -711,7 +708,7 @@ LaTeX Font Warning: Font shape `TS1/aett/m/n' undefined
 (Font)              using `TS1/cmr/m/n' instead
 (Font)              for symbol `textquotesingle' on input line 382.
 
-[6]
+[6 <./score-metrics-3.png>]
 Overfull \hbox (15.59483pt too wide) in paragraph at lines 493--494
 \T1/aer/m/n/9 ment out-reach co-or-di-na-tors can com-bine their in-ter-nal dat
 abases
@@ -727,11 +724,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Here is how much of TeX's memory you used:
  7494 strings out of 493089
  112772 string characters out of 6134842
- 339508 words of memory out of 5000000
+ 305651 words of memory out of 5000000
  10795 multiletter control sequences out of 15000+600000
  54470 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,42p,946b,1444s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,42p,946b,1619s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texl
@@ -749,7 +746,7 @@ type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/u
 rw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/u
 tmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
 >
-Output written on smoke-alarm-risk.pdf (7 pages, 607692 bytes).
+Output written on smoke-alarm-risk.pdf (7 pages, 615911 bytes).
 PDF statistics:
  113 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream
