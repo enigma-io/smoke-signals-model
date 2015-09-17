@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 16:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 SEP 2015 16:32
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -336,6 +336,9 @@ runsystem(which "pygmentize" && touch "smoke-alarm-risk.aex")...executed.
 
 runsystem(rm "smoke-alarm-risk.aex")...executed.
 
+runsystem(pygmentize -S default -f latex -P commandprefix=PYGdefault > "_minted
+-smoke-alarm-risk/default.pygstyle")...executed.
+
 
 (./_minted-smoke-alarm-risk/default.pygstyle)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
@@ -576,6 +579,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 146--146
 ]
 \openout3 = `smoke-alarm-risk.pyg'.
 
+runsystem(pygmentize -l yaml -f latex -F tokenmerge -P style=default -P command
+prefix=PYGdefault -o "_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230
+CC0FA479B990C6F6C4673513D42342EE.pygtex" "smoke-alarm-risk.pyg" )...executed.
+
 
 (./_minted-smoke-alarm-risk/37022F6B398D3A6230F3C0A973344230CC0FA479B990C6F6C46
 73513D42342EE.pygtex) <missing-data-1.png, id=13, 505.89pt x 505.89pt>
@@ -592,6 +599,10 @@ File: explore-correlations-1-2.png Graphic file (type png)
 Package pdftex.def Info: explore-correlations-1-2.png used on input line 227.
 (pdftex.def)             Requested size: 212.47234pt x 212.47234pt.
 \openout3 = `smoke-alarm-risk.pyg'.
+
+runsystem(pygmentize -l r -f latex -F tokenmerge -P style=default -P commandpre
+fix=PYGdefault -o "_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF
+858C7C2439D82CCC713DBA0C47702.pygtex" "smoke-alarm-risk.pyg" )...executed.
 
 
 (./_minted-smoke-alarm-risk/CD3F6E01B3C71A56F8F4AE41E0F3F575DEF858C7C2439D82CCC
