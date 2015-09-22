@@ -1,11 +1,12 @@
 ---
 title: "Computing Smoke Alarm Risk with the AHS + ACS"
 author: "Brian Abelson"
-date: "June 17, 2015"
+date: "September 22, 2015"
 output: html_document
 ---
 
 ## Setup
+
 ```{r setup, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
 rm(list=ls())
 
@@ -30,12 +31,14 @@ opts_chunk$set(
   fig.height=3,
   fig.width=5
 ) 
-```
-
-
-```{r run-scripts, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
 # include the plot theme
 source('rscripts/plot_theme.R')
+
+```
+
+# Clean and import AHS data.
+
+```{r run-scripts, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
 
 # clean the ahs data.
 source('rscripts/clean_ahs.R')
@@ -69,10 +72,9 @@ ggplot(per_missing_by_group, aes(x=reorder(group, per_missing), y=per_missing, l
   theme_enigma()
 ```
 
-
 ## Correlations with "smoke"
 
-A simple way to explore what factors are most associated with people who don't have smoke alarms is by computing correlations between the dependent variable and all independent variables.  The following two plots visualize
+A simple way to explore what factors are most associated with people who don't have smoke alarms is by computing correlations between the dependent variable and all independent variables.  The following two plots visualize:
 
 1. Absolute correlation by variable. 
 2. Mean absolute correlation of variable by group.
@@ -153,7 +155,6 @@ save(d, file='cache/model-data.Rda')
 
 We first estimate a single random forest model at the national level. Since only 4% of respondents answered negatively to the question "Do you have a working smoke alarm?", we need to be sensitive to the effects of class imbalance. We first train multiple forests on the same sample of the AHS, incrementing the weighting factor for respondents without smoke alarms.
 
-Assess weighting of dependent variable
 
 ```{r test-rf}
 # clear memory
@@ -401,7 +402,7 @@ Compute national risk scores for the ACS.
 
 ```{r score-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
 
-# hack
+# select only the variables from the model
 acs_bg$smoke <- NA
 bg_geoid <- acs_bg$bg_geoid
 acs_bg <- subset(acs_bg, select=VARS)
@@ -410,6 +411,7 @@ acs_bg <- subset(acs_bg, select=VARS)
 acs_bg_t <- apply(acs_bg[,3:ncol(acs_bg)], 2, function(x) { 
   return(normscore(log10(x + 0.05)))
   })
+# join back in acs data.
 acs_bg_t <- cbind(acs_bg[,1:2], acs_bg_t)
 
 # compute block-group probabilities
