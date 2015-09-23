@@ -10,6 +10,9 @@ fetch_data:
 	wget http://enigma-public.s3.amazonaws.com/projects/smoke-alarm-risk/data/acs-bg-population.csv \
 		-O data/acs-bg-population.csv
 
+	wget http://enigma-public.s3.amazonaws.com/projects/smoke-alarm-risk/data/acs-bg-pop-density.csv \
+		-O data/acs-bg-pop-density.csv
+
 	wget http://enigma-public.s3.amazonaws.com/projects/smoke-alarm-risk/data/msa80-bg.csv \
 		-O data/msa80-bg.csv
 

@@ -487,6 +487,7 @@ In order to give a better indication of whether a block group is at-risk for fat
 ```{r format-output, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
 at_risk <- as.data.frame(fread('data/acs-bg-at-risk-population.csv'))
 pop <- as.data.frame(fread('data/acs-bg-population.csv'))
+pop_density <- as.data.frame(fread('data/acs-bg-pop-density.csv'))
 output <- join(output, at_risk, by='bg_geoid')
 output <- join(output, pop, by='bg_geoid')
 output <- join(output, pop_density, by='bg_geoid')
