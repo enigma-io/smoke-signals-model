@@ -77,7 +77,7 @@ rf_estimate <- function(d, classwts=c(1, 19), ntree=100, importance=F,
 rf_imp_plot <- function(imp, title='Variable importance for Random Forest model') {
   
   ggplot(imp, aes(x=reorder(term, importance), y=importance)) + 
-    geom_bar(stat='identity', color=BLUE) +
+    geom_bar(stat='identity', color=BLUE, fill=BLUE) +
     coord_flip() + 
     xlab('Variable') + 
     ylab('Importance') + 
