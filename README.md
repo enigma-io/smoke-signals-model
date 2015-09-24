@@ -1,4 +1,4 @@
-smoke-alarm-risk
+smoke-signals-model
 ================
 
 This repository contains code and documentation for generating scores that help indicate whether or not the residents of a census block group have a high risk for its residents not having smoke alarms. You can read an overview of the analysis [here](http://blog.enigma.io/risk-model-for-residences-without-smoke-alarms/). This analysis is made possible by mapping common variables in the American Housing Survery and the American Community Survey. You can see details on how these mappings are done [in this repository](https://github.com/enigma-io/ahs-acs).
@@ -68,7 +68,7 @@ If you open a web browser and navigate to [http://localhost:8000/](http://localh
 
 ### Get the output.
 
-When the modeling script has finished executing, the risk scores per block group will be output to [`data/smoke-alarm-risk-scores.csv`](data/smoke-alarm-risk-scores.csv). These also include total population and at-risk population (< 5 years old, > 65 years old) per block group.
+When the modeling script has finished executing, the risk scores per block group will be output to `data/smoke-alarm-risk-scores.csv`. These also include total population and at-risk population (< 5 years old, > 65 years old) per block group.
 
 
 ### Known Issues
