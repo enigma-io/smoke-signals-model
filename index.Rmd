@@ -166,7 +166,7 @@ source('rscripts/model.R')
 load(file='cache/model-data.Rda')
 
 # assess effect of class weights on errors.
-o <- rf_classwts(d, ntree=30, sampsize=50000, weights=seq(1,31, 5), trace=0)
+o <- rf_classwts(d, ntree=30, sampsize=70000, weights=seq(1,31, 5), trace=0)
 rf_classwts_plot(o, optimal=21)
 ```
 
