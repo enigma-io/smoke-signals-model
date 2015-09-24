@@ -7,7 +7,7 @@ output: html_document
 
 ## Setup
 
-```{r setup, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r setup, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 rm(list=ls())
 
 # set your working directory here
@@ -19,9 +19,7 @@ require(ggplot2)
 require(reshape2)
 require(bigrf)
 require(scales)
-require(doMC)
 require(knitr)
-registerDoMC()
 
 # knitr options
 opts_chunk$set(
@@ -38,7 +36,9 @@ source('rscripts/plot_theme.R')
 
 # Clean and import AHS data.
 
-```{r run-scripts, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r run-scripts, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
+# include the plot theme
+source('rscripts/plot_theme.R')
 
 # clean the ahs data.
 source('rscripts/clean_ahs.R')
@@ -48,7 +48,7 @@ source('rscripts/clean_ahs.R')
 
 The AHS does not require that subjects respond to all questions. As a result, there's a lot of missing data. We'll discuss how we deal with it below.
 
-```{r missing-data, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r missing-data, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 nrows <- nrow(d)
 
 per_na <- function(x) {
@@ -79,7 +79,7 @@ A simple way to explore what factors are most associated with people who don't h
 1. Absolute correlation by variable. 
 2. Mean absolute correlation of variable by group.
 
-```{r explore-correlations-1, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r explore-correlations-1, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 # remove groups which have a preponderance of missing values
 group_to_vars$pvalue <- NULL
@@ -136,7 +136,7 @@ ggplot(group_cor_d, aes(x=reorder(group, cor), y=cor, label=cor)) +
 
 ## Variable Selection
 
-```{r variable-selection, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r variable-selection, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 # drop groups with too much missing data.
 ignore_groups = c('pvalue', 'vacancy', 'zincn', 'qfs1', 'rent', 'lprice')
@@ -167,13 +167,13 @@ source('rscripts/model.R')
 load(file='cache/model-data.Rda')
 
 # assess effect of class weights on errors.
-o <- rf_classwts(d, ntree=30, sampsize=50000, weights=seq(1,31, 5), trace=0)
+o <- rf_classwts(d, ntree=30, sampsize=70000, weights=seq(1,31, 5), trace=0)
 rf_classwts_plot(o, optimal=21)
 ```
 
 Cross validation
 
-```{r train-model, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r train-model, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 res <- rf_cross_validate(d, ntree=30, split_per=0.6, 
                          trace=0, classwts=c(1,20), impute=T)
 roc_curve(res$actual, as.numeric(res$probs), title='ROC Curve for Random Forest')
@@ -185,7 +185,7 @@ res$test_err
 
 Plot a histogram of the computed probabilities
 
-```{r prob-histogram, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r prob-histogram, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 p <- data.frame(x=res$probs)
 ggplot(p, aes(x=x)) + 
   geom_histogram(color="white", fill=BLUE, binwidth=0.04) +
@@ -197,7 +197,7 @@ ggplot(p, aes(x=x)) +
 
 Train on the entire AHS
 
-```{r final-model, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r final-model, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 natl_model <- rf_estimate(d, importance=T, classwts = c(1, 20), 
                    ntree=200, trace=1)
 save(natl_model, file='cache/natl-model.Rda')
@@ -205,7 +205,7 @@ save(natl_model, file='cache/natl-model.Rda')
 
 Variable Importance 
 
-```{r var-importance, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r var-importance, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 rf_imp_plot(natl_model$imp, 
             title = "Variable importance.")
 ```
@@ -214,13 +214,12 @@ rf_imp_plot(natl_model$imp,
 
 In order to account for regional-level variation, we model risk for each MSA.  In order to accomplish this, we needed to select particular MSAs which would have enough data to model.
 
-```{r compute-msa-stats, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r compute-msa-stats, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 # clear memory
 rm(list=ls()[which(!ls() %in% c('WD', 'VARS'))])
 
 # load minimal environment.
 setwd(WD)
-require(plyr)
 source('rscripts/plot_theme.R')
 source('rscripts/model.R')
 load(file='cache/model-data.Rda')
@@ -239,7 +238,7 @@ msa_t$score <- 1 - normscore(msa_t$per_negative, to=c(1,0))^2
 
 A histogram of number of respondents per MSA.
 
-```{r compute-msa-stats-histogram, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r compute-msa-stats-histogram, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 ggplot(msa_t, aes(x=n)) + 
   geom_histogram(binwidth=100, color="white", fill=RED) + 
   labs(title='Total respondents per MSA') + 
@@ -250,7 +249,7 @@ ggplot(msa_t, aes(x=n)) +
 
 A histogram of respondents without smoke alarms  MSA.
 
-```{r compute-msa-stats-histogram-neg, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r compute-msa-stats-histogram-neg, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 ggplot(msa_t, aes(x=n_negative)) + 
   geom_histogram(binwidth=20, color="white", fill=RED) + 
   labs(title='Respondents w/o alarms per MSA') + 
@@ -262,7 +261,7 @@ ggplot(msa_t, aes(x=n_negative)) +
 A scatterplot of, per MSA,  the percentage of respondents without smoke alarms by the 
 total number of respondents.
 
-```{r compute-msa-stats-scatter, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r compute-msa-stats-scatter, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 ggplot(msa_t, aes(x=n, y=per_negative)) + 
   geom_point(color=RED, alpha=0.5) + 
   xlab('Respondents') + 
@@ -273,7 +272,7 @@ ggplot(msa_t, aes(x=n, y=per_negative)) +
 
 Select MSAs with enough data.
 
-```{r select-msas, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r select-msas, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 MIN_MSA_OBS <- 2000
 TEST_MSA <- '7360'
 GOOD_MSAS <- as.character(msa_t$smsa[msa_t$n>= MIN_MSA_OBS])
@@ -284,7 +283,7 @@ cat('Dropped', (1-round(length(GOOD_MSAS) / nrow(msa_t), 4)) * 100, '% of MSAs')
 
 Train MSA models.
 
-```{r rf-msas, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r rf-msas, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 # a function for weighting an msa model 
 # by it's metrics
@@ -343,7 +342,7 @@ rm(msa_models, res)
 
 Assess the predictive power of MSA models relative to their sample characteristics.
 
-```{r rf-msas-metrics, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r rf-msas-metrics, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 mean_lacks_alarm_err <- mean(msa_metrics$train_lacks_alarm_err)
 mean_err <- mean(msa_metrics$train_err)
 cat('Mean false positve rate for MSA models:', mean_lacks_alarm_err, '\n')
@@ -369,13 +368,13 @@ ggplot(msa_metrics, aes(y=weight, x=n_negative)) +
   theme_enigma()
 
 # plot error rate by sample size.
-ggplot(msa_metrics, aes(y=train_err, x=n)) + 
+ggplot(msa_metrics, aes(y=train_lacks_alarm_err, x=n_negative)) + 
   geom_point(color=TEAL, size=3, alpha=0.6) + 
   stat_smooth(method="lm", se=T, color=RED, alpha=0.3) + 
   ylab('Error rate') + 
   xlab('Respondents.') + 
   ylim(0, 1) + 
-  labs(title='MSA-level errors by total respondents') +
+  labs(title='MSA-level false positives by respondents without alarms') +
   theme_enigma()
 
 ```
@@ -386,7 +385,7 @@ Now that we have our multi-leveled coefficients, we need to set about applying t
 
 Since we've already comprehensively mapped variables between the two datasets, this process is relatively straightforward.
 
-```{r read-in-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r read-in-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 rm(list=ls()[which(!ls() %in% c('WD', 'VARS'))])
 # load minimal environment.
 setwd(WD)
@@ -400,7 +399,7 @@ load(file='cache/msa-metrics.Rda')
 
 Compute national risk scores for the ACS.
 
-```{r score-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r score-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 # select only the variables from the model
 acs_bg$smoke <- NA
@@ -426,7 +425,7 @@ rm(bg_geoid, natl, natl_model)
 
 Compute MSA-level risk scores for the ACS.
 
-```{r score-msa-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r score-msa-acs, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 for (msa in names(msa_models)) {
     cat('Scoring MSA', msa, '... \n')
@@ -442,7 +441,7 @@ for (msa in names(msa_models)) {
 
 Merge scores
 
-```{r score-merge, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r score-merge, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 idx <- !is.na(output$msa_score)
 msa_o <- output[idx, ]
 natl_o <- output[!idx, ]
@@ -453,7 +452,7 @@ output <- rbind(msa_o, natl_o)
 
 Assess scores.
 
-```{r score-metrics, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r score-metrics, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 # plot a histogram of the computed scores
 ggplot(output, aes(x=smoke_alarm_risk)) + 
@@ -486,9 +485,10 @@ ggplot(output, aes(x=natl_score, y=msa_score)) +
 
 In order to give a better indication of whether a block group is at-risk for fatalities from fires, we also include an indicator for the percentage of the population that is under the age of 5 or over the age of 65 for each block group. We also include the total population and population density to filter out block groups without sufficient inhabitants to compute reliable scores.
 
-```{r format-output, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r format-output, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 at_risk <- as.data.frame(fread('data/acs-bg-at-risk-population.csv'))
 pop <- as.data.frame(fread('data/acs-bg-population.csv'))
+pop_density <- as.data.frame(fread('data/acs-bg-pop-density.csv'))
 output <- join(output, at_risk, by='bg_geoid')
 output <- join(output, pop, by='bg_geoid')
 output <- join(output, pop_density, by='bg_geoid')

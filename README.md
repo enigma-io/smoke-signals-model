@@ -23,6 +23,7 @@ This project is written in [`R`](http://www.r-project.org/) and depends on the f
 - `reshape2`
 - `scales`
 - `bigrf`
+- `pROC`
 
 You can install these packages by running the following command in the project's root directory:
 
@@ -56,7 +57,7 @@ Once you've run got these files, you should be all set to generate risk scores.
 $ make model
 ```
 
-Under the hood, this command executes [`index.Rmd`](index.Rmd), which is a [RMarkdown](http://rmarkdown.rstudio.com/) file. It contains notes on each step of our process and generates plots which visualize our results. You can see the finalized output of the modeling process on [RPubs](http://rpubs.com/enigma/smoke-alarm-risk). You can view a local version of the output by typing this command:
+Under the hood, this command executes [`index.Rmd`](index.Rmd), which is a [RMarkdown](http://rmarkdown.rstudio.com/) file. It contains notes on each step of our process and generates plots which visualize our results. You can see the finalized output of the modeling process by typing this command:
 
 ```bash
 $ make view
