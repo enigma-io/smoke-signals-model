@@ -1,6 +1,6 @@
 init:
 
-	Rscript requirements.r
+	Rscript requirements.R
 
 fetch_data:
 
