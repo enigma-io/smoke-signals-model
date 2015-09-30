@@ -54,6 +54,14 @@ Once you've run got these files, you should be all set to generate risk scores.
 
 ### Generate the risk scores.
 
+First, open up [`index.md`](index.Rmd) and change this line to your working directory:
+
+```r
+WD <- '/path/to/this/directory'
+```
+
+Execute the model using this command:
+
 ```bash
 $ make model
 ```
